@@ -9,12 +9,12 @@
 <body>
     <h1>Editar Equipo</h1>
     <form action="/actualizar/{{ equipo.id }}" method="post">
-        <select name="edificio" id="edificio" onchange="actualizarPisos()">
+        <select id="filtro_edificio" name="edificio" onchange="actualizarPisosFiltro()">
             <option value="">Seleccione un edificio</option>
-            <option value="Peru">Peru</option>
-            <option value="CAU">CAU</option>
+            <option value="Peru" {% if equipo.edificio == "Peru" %}selected{% endif %}>Peru</option>
+            <option value="CAU" {% if equipo.edificio == "CAU" %}selected{% endif %}>CAU</option>
         </select>
-        <select name="piso" id="piso">
+        <select id="filtro_piso" name="piso">
             <option value="">Seleccione un piso</option>
         </select>
         <input type="text" name="maquina_actual" value="{{ equipo.maquina_actual }}" required>
@@ -44,5 +44,7 @@
         <input type="text" name="maquina_anterior" value="{{ equipo.maquina_anterior }}">
         <button type="submit">Actualizar</button>
     </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

@@ -34,29 +34,34 @@ with app.app_context():
 @app.route('/', methods=['GET'])
 def index():
     filtro = request.args.get('filtro', '')
-    filtro_version = request.args.get('filtro_version')
     valor = request.args.get('valor', '')
+    filtro_edificio = request.args.get('edificio', '')
+    filtro_piso = request.args.get('piso', '')
+    filtro_version = request.args.get('version_windows', '')
 
+    # Construimos la consulta base
     consulta = Equipo.query
-    if filtro_version:
-        consulta = consulta.filter_by(version_windows=filtro_version)
 
+    # Filtrar por edificio
+    if filtro_edificio:
+        consulta = consulta.filter(Equipo.edificio == filtro_edificio)
+        if filtro_piso:  # Si también se selecciona un piso
+            consulta = consulta.filter(Equipo.piso == filtro_piso)
+
+    if filtro_version:
+        consulta = consulta.filter(Equipo.version_windows == filtro_version)
+    
     if filtro and valor:
         if filtro == 'piso':
-            equipos = Equipo.query.filter(Equipo.piso.contains(valor)).all()
+            consulta = consulta.filter(Equipo.piso.contains(valor))
         elif filtro == 'maquina_actual':
-            equipos = Equipo.query.filter(Equipo.maquina_actual.contains(valor)).all()
-        elif filtro == 'version_windows':
-            equipos = Equipo.query.filter(Equipo.version_windows.contains(valor)).all()
+            consulta = consulta.filter(Equipo.maquina_actual.contains(valor))
         elif filtro == 'usuario':
-            equipos = Equipo.query.filter(Equipo.usuario.contains(valor)).all()
-        else:
-            equipos = Equipo.query.all()
-    else:
-        equipos = Equipo.query.all()
+            consulta = consulta.filter(Equipo.usuario.contains(valor))
 
     equipos = consulta.all()
-    return render_template('index.html', equipos=equipos, filtro=filtro, valor=valor)
+    return render_template('index.html', equipos=equipos, filtro=filtro, valor=valor, filtro_version=filtro_version, filtro_edificio=filtro_edificio, filtro_piso=filtro_piso)
+
 
 # Ruta para agregar un equipo
 @app.route('/agregar', methods=['POST'])
@@ -105,6 +110,7 @@ def editar(id):
 def actualizar(id):
     equipo = Equipo.query.get(id)
 
+    equipo.edificio = request.form['edificio']
     equipo.piso = request.form['piso']
     equipo.maquina_actual = request.form['maquina_actual']
     equipo.version_windows = request.form['version_windows']
@@ -114,8 +120,10 @@ def actualizar(id):
     equipo.fecha_actualizacion = request.form['fecha_actualizacion']
     equipo.fecha_actualizacion = datetime.strptime(equipo.fecha_actualizacion, '%Y-%m-%dT%H:%M') if equipo.fecha_actualizacion else None
 
+    print(str(equipo)) 
     db.session.commit()
     return redirect('/')
 
 if __name__ == '__main__':
-    app.run(ssl_context=('cert/cert.pem', 'cert/key.pem'), debug=True, port=443)
+    #app.run(ssl_context=('cert/cert.pem', 'cert/key.pem'), debug=True, port=443)
+    app.run(host="0.0.0.0", port=5000, debug=True)  # NO usamos ssl_context

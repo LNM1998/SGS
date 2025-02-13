@@ -5,27 +5,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="./js/script.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Registro de Equipos</title>
 </head>
 
 <body>
+    <!-- Barra superior -->
+    <div class="top-bar">
+        <div>
+            <a href="#">Inicio</a>
+            <a href="#">Equipos Aios</a>
+            <a href="#">Notebooks</a>
+            <a href="#">Impresoras</a>
+        </div>
+        <div>
+            <a href="#">Perfil</a>
+            <a href="#">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <!-- Contenido de la página -->
+    <div class="content">
+        <h1>Bienvenido</h1>
+        <p>Este es un ejemplo de una barra superior con varias opciones.</p>
+    </div>
+
     <h1>Lista de Equipos</h1>
 
     <!-- Formulario de búsqueda -->
     <form action="/" method="get">
         <select id="filtro" name="filtro" onchange="cambiarFiltro()">
-            <option value="piso" {% if filtro=='piso' %}selected{% endif %}>Piso</option>
+            <option value="edificio" {% if filtro=='edificio' %}selected{% endif %}>Edificio</option>
             <option value="maquina_actual" {% if filtro=='maquina_actual' %}selected{% endif %}>Máquina Actual</option>
-            <option value="version_windows" {% if filtro=='version_windows' %}selected{% endif %}>Versión Windows</option>
+            <option value="version_windows" {% if filtro=='version_windows' %}selected{% endif %}>Versión Windows
+            </option>
             <option value="usuario" {% if filtro=='usuario' %}selected{% endif %}>Usuario</option>
         </select>
-    
+
         <!-- Campo de texto (por defecto) -->
         <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor">
-    
+
         <!-- Lista desplegable para Versión de Windows (oculta por defecto) -->
-        <select id="valor_select" name="valor" style="display: none;">
+        <select id="valor_select" name="version_windows" style="display: none;">
             <option value="">Todas</option>
             <option value="v 6.1" {% if valor=='v 6.1' %}selected{% endif %}>v 6.1</option>
             <option value="v 8.m" {% if valor=='v 8.m' %}selected{% endif %}>v 8.m</option>
@@ -46,13 +67,26 @@
             <option value="v 3.0" {% if valor=='v 3.0' %}selected{% endif %}>v 3.0</option>
             <option value="v 3.1" {% if valor=='v 3.1' %}selected{% endif %}>v 3.1</option>
         </select>
-    
+
+        <!-- Filtro de edificio (si aplica) -->
+        <select id="filtro_edificio" name="edificio" style="display: none;" onchange="actualizarPisosFiltro()">
+            <option value="">Todos los edificios</option>
+            <option value="Peru" {% if filtro_edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="CAU" {% if filtro_edificio=='CAU' %}selected{% endif %}>CAU</option>
+        </select>
+
+        <!-- Lista desplegable para Piso (oculta por defecto) -->
+        <select id="filtro_piso" name="piso" style="display: none;">
+            <option value="">Seleccione un piso</option>
+        </select>
+
         <button type="submit">Buscar</button>
+        <button type="button" onclick="limpiarFiltros()">Limpiar Filtros</button>
     </form>
 
     <!-- Formulario para agregar un equipo -->
     <form action="/agregar" method="post">
-        <select name="edificio" id="edificio" onchange="src.actualizarPisos()">
+        <select name="edificio" id="edificio" onchange="actualizarPisos()">
             <option value="">Seleccione un edificio</option>
             <option value="Peru">Peru</option>
             <option value="CAU">CAU</option>
@@ -89,39 +123,42 @@
     </form>
 
     <h2>Equipos Registrados</h2>
-    <table border="1">
-        <tr>
-            <th>Edificio</th>
-            <th>Piso</th>
-            <th>Máquina Actual</th>
-            <th>Versión Windows</th>
-            <th>Usuario</th>
-            <th>Fecha Actualización</th>
-            <th>Máquina Anterior</th>
-            <th>Acciones</th>
-        </tr>
-        {% for equipo in equipos %}
-        <tr>
-            <td>{{ equipo.edificio }}</td>
-            <td>{{ equipo.piso }}</td>
-            <td>{{ equipo.maquina_actual }}</td>
-            <td>{{ equipo.version_windows }}</td>
-            <td>{{ equipo.usuario }}</td>
-            <td>{{ equipo.fecha_actualizacion.strftime('%Y-%m-%d %H:%M') if equipo.fecha_actualizacion else '-' }}</td>
-            <td>{{ equipo.maquina_anterior if equipo.maquina_anterior else '-' }}</td>
-            <td>
-                <form action="/eliminar/{{ equipo.id }}" method="post" style="display:inline;">
-                    <button type="submit" class="eliminar">Eliminar</button>
-                </form>
-                <a href="/editar/{{ equipo.id }}"><button>Editar</button></a>
-            </td>
-        </tr>
-        {% endfor %}
+    <table id="tabla-equipos" border="1">
+        <thead>
+            <tr>
+                <th>Edificio</th>
+                <th onclick="ordenarTabla(1)">Piso <i class="fas fa-sort"></i></th>
+                <th onclick="ordenarTabla(2)">Máquina Actual<i class="fas fa-sort"></i></th>
+                <th>Versión Windows</th>
+                <th onclick="ordenarTabla(4)">Usuario <i class="fas fa-sort"></i></th>
+                <th>Fecha Actualización</th>
+                <th>Máquina Anterior</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipo in equipos %}
+            <tr>
+                <td>{{ equipo.edificio }}</td>
+                <td>{{ equipo.piso }}</td>
+                <td>{{ equipo.maquina_actual }}</td>
+                <td>{{ equipo.version_windows }}</td>
+                <td>{{ equipo.usuario }}</td>
+                <td>{{ equipo.fecha_actualizacion.strftime('%Y-%m-%d %H:%M') if equipo.fecha_actualizacion else '-' }}
+                </td>
+                <td>{{ equipo.maquina_anterior if equipo.maquina_anterior else '-' }}</td>
+                <td>
+                    <form action="/eliminar/{{ equipo.id }}" method="post" style="display:inline;">
+                        <button type="submit" class="eliminar">Eliminar</button>
+                    </form>
+                    <a href="/editar/{{ equipo.id }}"><button>Editar</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-</body>
 
-<script>
-    actualizarPisos();
-</script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
 
 </html>

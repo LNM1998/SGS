@@ -57,3 +57,37 @@ input, select {
     padding: 5px;
     margin: 5px;
 }
+
+/* Estilo para la barra superior */
+.top-bar {
+    background-color: #007bff;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Estilo de los enlaces */
+.top-bar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: inline-block;
+}
+
+/* Cambio de color al pasar el mouse */
+.top-bar a:hover {
+    background-color: #555;
+    border-radius: 5px;
+}
+
+/* Ajustar contenido para no quedar debajo de la barra */
+.content {
+    margin-top: 50px;
+    padding: 20px;
+}
