@@ -58,36 +58,142 @@ input, select {
     margin: 5px;
 }
 
-/* Estilo para la barra superior */
+/* ------------------- BARRA SUPERIOR ------------------- */
 .top-bar {
-    background-color: #007bff;
-    overflow: hidden;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Separa los elementos */
     align-items: center;
-    padding: 10px 20px;
+    background-color: #0044cc;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    box-sizing: border-box;
     position: fixed;
     top: 0;
-    width: 100%;
+    left: 0;
     z-index: 1000;
 }
 
-/* Estilo de los enlaces */
-.top-bar a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 15px;
-    display: inline-block;
+/* Contenedor de las opciones del lado izquierdo */
+.nav-left {
+    display: flex;
+    align-items: center;
 }
 
-/* Cambio de color al pasar el mouse */
-.top-bar a:hover {
-    background-color: #555;
+/* Contenedor de las opciones del lado derecho */
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Estilos generales para la lista de navegación */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px; /* Espaciado entre los elementos */
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+/* Estilos de los enlaces */
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s;
+}
+
+.nav-links a i {
+    margin-right: 8px;
+}
+
+.nav-links a:hover {
+    background: #002288;
     border-radius: 5px;
 }
 
+/* ------------------- MENÚ DESPLEGABLE ------------------- */
+.dropdown {
+    position: relative;
+}
+
+/* Estilo del botón "Reclamos" */
+.dropdown > a {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+/* Menú desplegable alineado correctamente */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #003399;
+    min-width: 200px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1000;
+    padding: 5px 0;
+}
+
+.dropdown-content li {
+    display: block;
+    width: 100%;
+}
+
+.dropdown-content a {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.dropdown-content a:hover {
+    background: #001166;
+}
+
+/* Mostrar menú desplegable al pasar el mouse */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.top-bar img {
+    height: 60px;
+}
+
+/* 🔹 Barra inferior */
+.bottom-bar {
+    background-color: #0044cc;
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 3px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.bottom-bar img {
+    height: 35px;
+}
+
+.bottom-bar text {
+    text-align: left;
+}
 /* Ajustar contenido para no quedar debajo de la barra */
 .content {
-    margin-top: 50px;
-    padding: 20px;
+    margin-top: 40px;
+    padding: 15px;
 }

@@ -79,7 +79,7 @@ function cambiarFiltro() {
 
 function limpiarFiltros() {
     // Redirigir a la página sin parámetros de búsqueda
-    window.location.href = "/";
+    window.location.href = "/equipos_aios";
 }
 
 function actualizarPisos() {

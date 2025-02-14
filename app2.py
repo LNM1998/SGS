@@ -30,9 +30,13 @@ class Equipo(db.Model):
 with app.app_context():
     db.create_all()
 
-# Página principal con la lista de equipos filtrado
-@app.route('/', methods=['GET'])
+@app.route('/',  methods=['GET'])
 def index():
+    return render_template('index.html')
+
+# Página principal con la lista de equipos filtrado
+@app.route('/equipos_aios', methods=['GET'])
+def equipos_aios():
     filtro = request.args.get('filtro', '')
     valor = request.args.get('valor', '')
     filtro_edificio = request.args.get('edificio', '')
@@ -60,7 +64,7 @@ def index():
             consulta = consulta.filter(Equipo.usuario.contains(valor))
 
     equipos = consulta.all()
-    return render_template('index.html', equipos=equipos, filtro=filtro, valor=valor, filtro_version=filtro_version, filtro_edificio=filtro_edificio, filtro_piso=filtro_piso)
+    return render_template('equipos_aios.html', equipos=equipos, filtro=filtro, valor=valor, filtro_version=filtro_version, filtro_edificio=filtro_edificio, filtro_piso=filtro_piso)
 
 
 # Ruta para agregar un equipo
@@ -88,7 +92,7 @@ def agregar():
 
     db.session.add(nuevo_equipo)
     db.session.commit()
-    return redirect('/')
+    return redirect('/equipos_aios')
 
 # Ruta para eliminar un equipo
 @app.route('/eliminar/<int:id>', methods=['POST'])
@@ -123,6 +127,22 @@ def actualizar(id):
     print(str(equipo)) 
     db.session.commit()
     return redirect('/')
+
+@app.route('/notebooks',  methods=['GET'])
+def notebooks():
+    return render_template('notebooks.html')
+
+@app.route('/impresoras',  methods=['GET'])
+def impresoras():
+    return render_template('impresoras.html')
+
+@app.route('/reclamos_b',  methods=['GET'])
+def reclamos_b():
+    return render_template('reclamos_b.html')
+
+@app.route('/reclamos_e',  methods=['GET'])
+def reclamos_e():
+    return render_template('reclamos_e.html')
 
 if __name__ == '__main__':
     #app.run(ssl_context=('cert/cert.pem', 'cert/key.pem'), debug=True, port=443)

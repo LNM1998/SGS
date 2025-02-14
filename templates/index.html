@@ -6,158 +6,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>Registro de Equipos</title>
+    <title>{% block title %}Sistema de inventario soporte{% endblock %}</title>
 </head>
 
 <body>
-    <!-- Barra superior -->
+    <!-- Barra de navegación superior -->
     <div class="top-bar">
-        <div>
-            <a href="#">Inicio</a>
-            <a href="#">Equipos Aios</a>
-            <a href="#">Notebooks</a>
-            <a href="#">Impresoras</a>
+        <!-- <div class="logo">
+            <img src="{{ url_for('static', filename='logo-enacom-nuevo.png') }}" alt="Logo">
+        </div> -->
+        <div class="nav-left">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i>Inicio</a></li>
+                <li><a href="{{ url_for('equipos_aios') }}"><i class="fas fa-desktop"></i>Equipos Aios</a></li>
+                <li><a href="{{ url_for('notebooks') }}"><i class="fas fa-laptop"></i>Notebooks</a></li>
+                <li><a href="{{ url_for('impresoras') }}"><i class="fas fa-print"></i>Impresoras</a></li>
+
+                <!-- Menú desplegable Reclamos -->
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-exclamation-circle"></i>Reclamos</a>
+                    <ul class="dropdown-content">
+                        <li><a href="{{ url_for('reclamos_b') }}">Reclamos Bangho</a></li>
+                        <li><a href="{{ url_for('reclamos_e') }}">Reclamos External</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-        <div>
-            <a href="#">Perfil</a>
-            <a href="#">Cerrar sesión</a>
+
+        <!-- Opciones alineadas a la derecha -->
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="#"><i class="fas fa-user"></i>Perfil</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+            </ul>
         </div>
     </div>
 
-    <!-- Contenido de la página -->
+    <!-- Contenido dinámico -->
     <div class="content">
+        {% block content %}
         <h1>Bienvenido</h1>
-        <p>Este es un ejemplo de una barra superior con varias opciones.</p>
+        <p>agregar contador de cantidad total equipos aios, notebooks e impresoras.</p>
+        {% endblock %}
     </div>
 
-    <h1>Lista de Equipos</h1>
-
-    <!-- Formulario de búsqueda -->
-    <form action="/" method="get">
-        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
-            <option value="edificio" {% if filtro=='edificio' %}selected{% endif %}>Edificio</option>
-            <option value="maquina_actual" {% if filtro=='maquina_actual' %}selected{% endif %}>Máquina Actual</option>
-            <option value="version_windows" {% if filtro=='version_windows' %}selected{% endif %}>Versión Windows
-            </option>
-            <option value="usuario" {% if filtro=='usuario' %}selected{% endif %}>Usuario</option>
-        </select>
-
-        <!-- Campo de texto (por defecto) -->
-        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor">
-
-        <!-- Lista desplegable para Versión de Windows (oculta por defecto) -->
-        <select id="valor_select" name="version_windows" style="display: none;">
-            <option value="">Todas</option>
-            <option value="v 6.1" {% if valor=='v 6.1' %}selected{% endif %}>v 6.1</option>
-            <option value="v 8.m" {% if valor=='v 8.m' %}selected{% endif %}>v 8.m</option>
-            <option value="v 10.m" {% if valor=='v 10.m' %}selected{% endif %}>v 10.m</option>
-            <option value="v 13" {% if valor=='v 13' %}selected{% endif %}>v 13</option>
-            <option value="v 2" {% if valor=='v 2' %}selected{% endif %}>v 2</option>
-            <option value="v 2.1" {% if valor=='v 2.1' %}selected{% endif %}>v 2.1</option>
-            <option value="v 2.2" {% if valor=='v 2.2' %}selected{% endif %}>v 2.2</option>
-            <option value="v 2.3" {% if valor=='v 2.3' %}selected{% endif %}>v 2.3</option>
-            <option value="v 2.4" {% if valor=='v 2.4' %}selected{% endif %}>v 2.4</option>
-            <option value="v 2.5" {% if valor=='v 2.5' %}selected{% endif %}>v 2.5</option>
-            <option value="v 2.6" {% if valor=='v 2.6' %}selected{% endif %}>v 2.6</option>
-            <option value="v 2.7.1" {% if valor=='v 2.7.1' %}selected{% endif %}>v 2.7.1</option>
-            <option value="v 2.8" {% if valor=='v 2.8' %}selected{% endif %}>v 2.8</option>
-            <option value="v 2.8.1" {% if valor=='v 2.8.1' %}selected{% endif %}>v 2.8.1</option>
-            <option value="v 2.9" {% if valor=='v 2.9' %}selected{% endif %}>v 2.9</option>
-            <option value="v 2.9.1" {% if valor=='v 2.9.1' %}selected{% endif %}>v 2.9.1</option>
-            <option value="v 3.0" {% if valor=='v 3.0' %}selected{% endif %}>v 3.0</option>
-            <option value="v 3.1" {% if valor=='v 3.1' %}selected{% endif %}>v 3.1</option>
-        </select>
-
-        <!-- Filtro de edificio (si aplica) -->
-        <select id="filtro_edificio" name="edificio" style="display: none;" onchange="actualizarPisosFiltro()">
-            <option value="">Todos los edificios</option>
-            <option value="Peru" {% if filtro_edificio=='Peru' %}selected{% endif %}>Peru</option>
-            <option value="CAU" {% if filtro_edificio=='CAU' %}selected{% endif %}>CAU</option>
-        </select>
-
-        <!-- Lista desplegable para Piso (oculta por defecto) -->
-        <select id="filtro_piso" name="piso" style="display: none;">
-            <option value="">Seleccione un piso</option>
-        </select>
-
-        <button type="submit">Buscar</button>
-        <button type="button" onclick="limpiarFiltros()">Limpiar Filtros</button>
-    </form>
-
-    <!-- Formulario para agregar un equipo -->
-    <form action="/agregar" method="post">
-        <select name="edificio" id="edificio" onchange="actualizarPisos()">
-            <option value="">Seleccione un edificio</option>
-            <option value="Peru">Peru</option>
-            <option value="CAU">CAU</option>
-        </select>
-        <select name="piso" id="piso">
-            <option value="">Seleccione un piso</option>
-        </select>
-        <input type="text" name="maquina_actual" placeholder="Máquina Actual" required>
-        <select name="version_windows" required>
-            <option value="">Versión de Imagen</option>
-            <option value="v 6.1">v 6.1</option>
-            <option value="v 8.m">v 8.m</option>
-            <option value="v 10.m">v 10.m</option>
-            <option value="v 13">v 13</option>
-            <option value="v 2">v 2</option>
-            <option value="v 2.1">v 2.1</option>
-            <option value="v 2.2">v 2.2</option>
-            <option value="v 2.3">v 2.3</option>
-            <option value="v 2.4">v 2.4</option>
-            <option value="v 2.5">v 2.5</option>
-            <option value="v 2.6">v 2.6</option>
-            <option value="v 2.7.1">v 2.7.1</option>
-            <option value="v 2.8">v 2.8</option>
-            <option value="v 2.8.1">v 2.8.1</option>
-            <option value="v 2.9">v 2.9</option>
-            <option value="v 2.9.1">v 2.9.1</option>
-            <option value="v 3.0">v 3.0</option>
-            <option value="v 3.1">v 3.1</option>
-        </select>
-        <input type="text" name="usuario" placeholder="Usuario" required>
-        <input type="datetime-local" name="fecha_actualizacion">
-        <input type="text" name="maquina_anterior" placeholder="Máquina Anterior (opcional)">
-        <button type="submit">Agregar Equipo</button>
-    </form>
-
-    <h2>Equipos Registrados</h2>
-    <table id="tabla-equipos" border="1">
-        <thead>
-            <tr>
-                <th>Edificio</th>
-                <th onclick="ordenarTabla(1)">Piso <i class="fas fa-sort"></i></th>
-                <th onclick="ordenarTabla(2)">Máquina Actual<i class="fas fa-sort"></i></th>
-                <th>Versión Windows</th>
-                <th onclick="ordenarTabla(4)">Usuario <i class="fas fa-sort"></i></th>
-                <th>Fecha Actualización</th>
-                <th>Máquina Anterior</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for equipo in equipos %}
-            <tr>
-                <td>{{ equipo.edificio }}</td>
-                <td>{{ equipo.piso }}</td>
-                <td>{{ equipo.maquina_actual }}</td>
-                <td>{{ equipo.version_windows }}</td>
-                <td>{{ equipo.usuario }}</td>
-                <td>{{ equipo.fecha_actualizacion.strftime('%Y-%m-%d %H:%M') if equipo.fecha_actualizacion else '-' }}
-                </td>
-                <td>{{ equipo.maquina_anterior if equipo.maquina_anterior else '-' }}</td>
-                <td>
-                    <form action="/eliminar/{{ equipo.id }}" method="post" style="display:inline;">
-                        <button type="submit" class="eliminar">Eliminar</button>
-                    </form>
-                    <a href="/editar/{{ equipo.id }}"><button>Editar</button></a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+    <!-- Barra inferior con logo -->
+    <div class="bottom-bar">
+        <text>@lnmunioz</text>
+        <img src="{{ url_for('static', filename='logo-enacom-nuevo.png') }}" alt="Logo Inferior">
+    </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 
