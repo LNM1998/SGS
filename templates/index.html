@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -13,11 +14,17 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>{% block title %}Sistema de gestion soporte{% endblock %}</title>
+=======
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>{% block title %}Sistema de inventario soporte{% endblock %}</title>
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
 </head>
 
 <body>
     <!-- Barra de navegación superior -->
     <div class="top-bar">
+<<<<<<< HEAD
         <div class="nav-left">
             <ul class="nav-links">
                 <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i>Inicio</a></li>
@@ -76,12 +83,33 @@
                     </ul>
                 </li>
                 {% endif %}
+=======
+        <!-- <div class="logo">
+            <img src="{{ url_for('static', filename='logo-enacom-nuevo.png') }}" alt="Logo">
+        </div> -->
+        <div class="nav-left">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i>Inicio</a></li>
+                <li><a href="{{ url_for('equipos_aios') }}"><i class="fas fa-desktop"></i>Equipos Aios</a></li>
+                <li><a href="{{ url_for('notebooks') }}"><i class="fas fa-laptop"></i>Notebooks</a></li>
+                <li><a href="{{ url_for('impresoras') }}"><i class="fas fa-print"></i>Impresoras</a></li>
+
+                <!-- Menú desplegable Reclamos -->
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-exclamation-circle"></i>Reclamos</a>
+                    <ul class="dropdown-content">
+                        <li><a href="{{ url_for('reclamos_b') }}">Reclamos Bangho</a></li>
+                        <li><a href="{{ url_for('reclamos_e') }}">Reclamos External</a></li>
+                    </ul>
+                </li>
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
             </ul>
         </div>
 
         <!-- Opciones alineadas a la derecha -->
         <div class="nav-right">
             <ul class="nav-links">
+<<<<<<< HEAD
                 {% if current_user.is_admin %}
                 <!-- Menú desplegable usuario admin -->
                 <li class="dropdown"><a href="#"><i class="fas fa-user"></i>{{ session['username'] if 'username' in session else 'Perfil' }}</a>
@@ -94,6 +122,10 @@
                 </li>
                 <li><a href="{{ url_for('salir') }}"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
                 {% endif %}
+=======
+                <li><a href="#"><i class="fas fa-user"></i>Perfil</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
             </ul>
         </div>
     </div>
@@ -101,6 +133,7 @@
     <!-- Contenido dinámico -->
     <div class="content">
         {% block content %}
+<<<<<<< HEAD
         <h1>Bienvenido al Sistema{% if session.get('name') %}, {{ session['name'] }}{% endif %}</h1>
         <div style="display: flex; gap: 20px; justify-content: space-between; flex-wrap: wrap;">
             <!-- Modificaciones semanales -->
@@ -139,6 +172,10 @@
             Desde el mismo se puede registrar y actualizar computadoras, notebooks, impresoras y demás equipamiento de hardware, además de cargar y seguir reclamos, 
             generado a agentes externos para resolver problemas, proveer repuestos y/o insumos para nuestro parque informatico.
         </p>
+=======
+        <h1>Bienvenido</h1>
+        <p>agregar contador de cantidad total equipos aios, notebooks e impresoras.</p>
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
         {% endblock %}
     </div>
 

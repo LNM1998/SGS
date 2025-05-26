@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Equipo</title>
+</head>
+<body>
+    <h1>Editar Equipo</h1>
+    <form action="/actualizar/{{ equipo.id }}" method="post">
+        <select id="filtro_edificio" name="edificio" onchange="actualizarPisosFiltro()">
+            <option value="">Seleccione un edificio</option>
+            <option value="Peru" {% if equipo.edificio == "Peru" %}selected{% endif %}>Peru</option>
+            <option value="CAU" {% if equipo.edificio == "CAU" %}selected{% endif %}>CAU</option>
+        </select>
+        <select id="filtro_piso" name="piso">
+            <option value="">Seleccione un piso</option>
+        </select>
+        <input type="text" name="maquina_actual" value="{{ equipo.maquina_actual }}" required>
+        <select name="version_windows" required>
+            <option value="">Versión de Imagen</option>
+            <option value="v 6.1" {% if equipo.version_windows == "v 6.1" %}selected{% endif %}>v 6.1</option>
+            <option value="v 8.m" {% if equipo.version_windows == "v 8.m" %}selected{% endif %}>v 8.m</option>
+            <option value="v 10.m" {% if equipo.version_windows == "v 10.m" %}selected{% endif %}>v 10.m</option>
+            <option value="v 13" {% if equipo.version_windows == "v 13" %}selected{% endif %}>v 13</option>
+            <option value="v 2" {% if equipo.version_windows == "v 2" %}selected{% endif %}>v 2</option>
+            <option value="v 2.1" {% if equipo.version_windows == "v 2.1" %}selected{% endif %}>v 2.1</option>
+            <option value="v 2.2" {% if equipo.version_windows == "v 2.2" %}selected{% endif %}>v 2.2</option>
+            <option value="v 2.3" {% if equipo.version_windows == "v 2.3" %}selected{% endif %}>v 2.3</option>
+            <option value="v 2.4" {% if equipo.version_windows == "v 2.4" %}selected{% endif %}>v 2.4</option>
+            <option value="v 2.5" {% if equipo.version_windows == "v 2.5" %}selected{% endif %}>v 2.5</option>
+            <option value="v 2.6" {% if equipo.version_windows == "v 2.6" %}selected{% endif %}>v 2.6</option>
+            <option value="v 2.7.1" {% if equipo.version_windows == "v 2.7.1" %}selected{% endif %}>v 2.7.1</option>
+            <option value="v 2.8" {% if equipo.version_windows == "v 2.8" %}selected{% endif %}>v 2.8</option>
+            <option value="v 2.8.1" {% if equipo.version_windows == "v 2.8.1" %}selected{% endif %}>v 2.8.1</option>
+            <option value="v 2.9" {% if equipo.version_windows == "v 2.9" %}selected{% endif %}>v 2.9</option>
+            <option value="v 2.9.1" {% if equipo.version_windows == "v 2.9.1" %}selected{% endif %}>v 2.9.1</option>
+            <option value="v 3.0" {% if equipo.version_windows == "v 3.0" %}selected{% endif %}>v 3.0</option>
+            <option value="v 3.1" {% if equipo.version_windows == "v 3.1" %}selected{% endif %}>v 3.1</option>
+        </select>        
+        <input type="text" name="usuario" value="{{ equipo.usuario }}" required>
+        <input type="datetime-local" name="fecha_actualizacion" value="{{ equipo.fecha_actualizacion }}">
+        <input type="text" name="maquina_anterior" value="{{ equipo.maquina_anterior }}">
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

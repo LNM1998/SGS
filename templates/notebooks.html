@@ -3,6 +3,7 @@
 {% block title %}Notebooks{% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
 <h1>Notebooks Registradas</h1>
 {% if current_user.role in ['basico', 'admin'] %}
 <button id="btn-agregar" onclick="abrirVentana('{{ url_for('notebooks.agregar_notebook') }}')">
@@ -175,4 +176,8 @@
     <span class="estado robada"></span> <span>Robada</span>
 </div> 
 
+=======
+    <h1>Notebooks</h1>
+    <p>Contenido de notebooks...</p>
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
 {% endblock %}

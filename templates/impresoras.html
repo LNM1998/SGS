@@ -3,6 +3,7 @@
 {% block title %}Impresoras{% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
 <h1>Impresoras Registradas</h1>
 
 {% if current_user.role in ['basico', 'admin'] %}
@@ -106,4 +107,8 @@
         <script src="{{ url_for('static', filename='script.js') }}"></script>
     </tbody>
 </table>
+=======
+    <h1>Impresoras</h1>
+    <p>Contenido de impresoras...</p>
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
 {% endblock %}

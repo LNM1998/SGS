@@ -1,6 +1,12 @@
 let ordenAscendente = {};
 
 document.addEventListener("DOMContentLoaded", function () {
+<<<<<<< HEAD
+=======
+    cambiarFiltro();  // Para que la selección de filtro sea correcta al cargar la página
+    actualizarPisos(); // Para cargar los pisos correctamente si ya hay un edificio seleccionado
+
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
     // Obtener referencias a los selects
     let edificioSelect = document.getElementById("filtro_edificio");
     let pisoSelect = document.getElementById("filtro_piso");
@@ -14,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         edificioSelect.value = edificioSeleccionado;
     }
 
+<<<<<<< HEAD
     // const documentList = document.getElementById('document-list');
     // const documentViewer = document.getElementById('document-viewer');
 
@@ -673,6 +680,73 @@ $(document).ready(function() {
 });
 
 
+=======
+    window.ordenarTabla = function (columna) {
+        let tabla = document.getElementById("tabla-equipos");
+        let filas = Array.from(tabla.rows).slice(1); // Obtener todas las filas excepto el encabezado
+
+        // Alternar orden de la columna seleccionada
+        ordenAscendente[columna] = !ordenAscendente[columna];
+
+        // Detectar si la columna contiene números o texto
+        let esNumerico = filas.every(fila => !isNaN(fila.cells[columna].innerText.trim()));
+
+        filas.sort((a, b) => {
+            let valorA = a.cells[columna].innerText.trim();
+            let valorB = b.cells[columna].innerText.trim();
+
+            if (esNumerico) {
+                return ordenAscendente[columna] ? valorA - valorB : valorB - valorA;
+            } else {
+                return ordenAscendente[columna] ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
+            }
+        });
+
+        // Limpiar y reinsertar filas ordenadas
+        filas.forEach(fila => tabla.appendChild(fila));
+
+        // Actualizar iconos de flecha
+        let iconos = document.querySelectorAll("th i");
+        iconos.forEach(icono => icono.className = "fas fa-sort");
+
+        let icono = tabla.rows[0].cells[columna].querySelector("i");
+        icono.className = ordenAscendente[columna] ? "fas fa-sort-up" : "fas fa-sort-down";
+    };
+});
+
+function cambiarFiltro() {
+    var filtro = document.getElementById("filtro").value;
+    var inputTexto = document.getElementById("valor_input");
+    var selectVersion = document.getElementById("valor_select");
+    var selectEdificio = document.getElementById("filtro_edificio");
+    var selectPiso = document.getElementById("filtro_piso");
+
+    // Mostrar/ocultar elementos según el filtro seleccionado
+    if (filtro === "version_windows") {
+        inputTexto.style.display = "none";
+        selectVersion.style.display = "inline-block";
+        selectEdificio.style.display = "none";
+        selectPiso.style.display = "none";
+    } else if (filtro === "edificio") {
+        inputTexto.style.display = "none";
+        selectVersion.style.display = "none";
+        selectEdificio.style.display = "inline-block";
+        selectPiso.style.display = "inline-block"; // Mostrar pisos según edificio seleccionado
+        actualizarPisos(); // Llamar función para actualizar pisos
+    } else {
+        inputTexto.style.display = "inline-block";
+        selectVersion.style.display = "none";
+        selectEdificio.style.display = "none";
+        selectPiso.style.display = "none";
+    }
+}
+
+function limpiarFiltros() {
+    // Redirigir a la página sin parámetros de búsqueda
+    window.location.href = "/equipos_aios";
+}
+
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
 function actualizarPisos() {
     let edificio = document.getElementById("edificio").value;
     let pisoSelect = document.getElementById("piso");
@@ -686,14 +760,18 @@ function actualizarPisos() {
         for (let i = -3; i <= 20; i++) {
             pisos.push(i);
         }
+<<<<<<< HEAD
     } else if (edificio === "Lima") {
         for (let i = 0; i <= 13; i++) {
             pisos.push(i);
         }
+=======
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
     } else if (edificio === "CAU") {
         for (let i = 0; i <= 2; i++) {
             pisos.push(i);
         }
+<<<<<<< HEAD
     } else if (edificio === "ISER") {
         for (let i = 0; i <= 4; i++) {
             pisos.push(i);
@@ -711,6 +789,8 @@ function actualizarPisos() {
         pisos.push("Deposito Mataderos");
     } else if (edificio === "Deposito Saldias") {
         pisos.push("Deposito Saldias");
+=======
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
     }
 
     // Agregar nuevas opciones
@@ -722,12 +802,21 @@ function actualizarPisos() {
     });
 }
 
+<<<<<<< HEAD
 function actualizarPisosFiltro(origen = 1) {
     let edificio = document.getElementById(origen === 2 ? "filtro_edificio2" : "filtro_edificio").value;
     let pisoSelect = document.getElementById(origen === 2 ? "filtro_piso2" : "filtro_piso");
 
     // Guardar el edificio seleccionado en sessionStorage
     // sessionStorage.setItem("edificioSeleccionado", edificio);
+=======
+function actualizarPisosFiltro() {
+    let edificio = document.getElementById("filtro_edificio").value;
+    let pisoSelect = document.getElementById("filtro_piso");
+
+    // Guardar el edificio seleccionado en sessionStorage
+    sessionStorage.setItem("edificioSeleccionado", edificio);
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
 
     // Limpiar opciones anteriores y ocultar si no hay edificio
     pisoSelect.innerHTML = '<option value="">Seleccione un piso</option>';
@@ -751,6 +840,7 @@ function actualizarPisosFiltro(origen = 1) {
         for (let i = 0; i <= 2; i++) {
             pisos.push(i);
         }
+<<<<<<< HEAD
     } else if (edificio === "Lima") {
         for (let i = 0; i <= 13; i++) {
             pisos.push(i);
@@ -772,6 +862,8 @@ function actualizarPisosFiltro(origen = 1) {
         pisos.push("Deposito Mataderos");
     } else if (edificio === "Deposito Saldias") {
         pisos.push("Deposito Saldias");
+=======
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
     }
 
     // Agregar nuevas opciones al select
@@ -789,9 +881,20 @@ function actualizarPisosFiltro(origen = 1) {
 }
 
 // Ejecutar la función al cargar la página para restaurar selección
+<<<<<<< HEAD
 // actualizarPisosFiltro();
+=======
+actualizarPisosFiltro();
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
 
 // Guardar la selección del piso cuando cambia
 pisoSelect.addEventListener("change", function () {
     sessionStorage.setItem("pisoSeleccionado", pisoSelect.value);
 });
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> be0a8f4bcaeeadf7c4a7c2a8d4e19325df30310c
