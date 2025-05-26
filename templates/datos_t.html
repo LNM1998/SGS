@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+
+{% block title %}Tickets{% endblock %}
+
+{% block content %}
+<body>
+    <h2>Reporte de Tickets</h2>
+    <form method="POST" id="form_fechas">
+        <label for="fecha_inicio">Desde:</label>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}">
+        <label for="fecha_fin">Hasta:</label>
+        <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin }}">
+        <button type="submit">Consultar</button>
+    </form>
+
+    <div style="flex: 1; min-width: 700px;">
+        <h3 style="color: #1e3a8a;">Tickets Resueltos Por Técnico</h3>
+        <div id="datos_t" style="height: 700px;"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        document.getElementById("form_fechas").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const fecha_inicio = document.getElementById("fecha_inicio").value;
+            const fecha_fin = document.getElementById("fecha_fin").value;
+
+            fetch('/datos_tickets', {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                const chartDiv = document.getElementById("datos_t");
+                chartDiv.innerHTML = "";
+                const chart = new ApexCharts(chartDiv, {
+                    series: data.valores,
+                    chart: {
+                        type: 'pie',
+                        height: 700
+                    },
+                    labels: data.labels,
+                    colors: ['#003366', '#004080', '#0059b3', '#336699', '#6699cc', '#99ccff', '#0066cc', '#3399ff', '#80bfff'],
+                    dataLabels: {
+                        enabled: true,
+                        formatter: (val, opts) => {
+                            return `${opts.w.globals.labels[opts.seriesIndex]}: ${opts.w.config.series[opts.seriesIndex]}`;
+                        }
+                    },
+                    legend: {
+                        show: true,
+                    }
+                });
+                chart.render();
+            })
+            .catch(err => console.error("Error:", err));
+        });
+    </script>
+</body>
+{% endblock %}

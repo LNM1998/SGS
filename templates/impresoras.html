@@ -1,0 +1,109 @@
+{% extends "index.html" %}
+
+{% block title %}Impresoras{% endblock %}
+
+{% block content %}
+<h1>Impresoras Registradas</h1>
+
+{% if current_user.role in ['basico', 'admin'] %}
+<button id="btn-agregar" onclick="abrirVentana('{{ url_for('impresoras.agregar_impresora') }}')">
+    <i class="fas fa-plus"></i>
+    <span>AGREGAR</span>
+</button>
+{% endif %}
+<!-- Formulario de búsqueda -->
+<form action="/impresoras" method="get">
+    <div class="filtros-container">
+        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
+            <option value="">Filtro de Busqueda</option>
+            <option value="edificio" {% if filtro=='edificio' %}selected{% endif %}>Edificio</option>
+            <option value="numero_serie" {% if filtro=='numero_serie' %}selected{% endif %}>Numero de Serie</option>
+            <option value="ip" {% if filtro=='ip' %}selected{% endif %}>IP</option>
+        </select>
+    
+        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor">
+    
+        <select id="valor_select" name="estado" style="display: none;">
+            <option value="">Todas</option>
+            <option value="resuelto" {% if valor=='resuelto' %}selected{% endif %}>Resuelto</option>
+            <option value="en espera" {% if valor=='en espera' %}selected{% endif %}>En Espera</option>
+            <option value="sin responder" {% if valor=='sin responder' %}selected{% endif %}>Sin Responder</option>
+        </select>
+    
+        <select id="filtro_edificio" name="edificio" style="display: none;" onchange="actualizarPisosFiltro()">
+            <option value="">Todos los edificios</option>
+            <option value="Peru" {% if filtro_edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if filtro_edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if filtro_edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if filtro_edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if filtro_edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if filtro_edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if filtro_edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if filtro_edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+    
+        <select id="filtro_piso" name="piso" style="display: none;">
+            <option value="">Seleccione un piso</option>
+        </select>
+    
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
+        {% if current_user.role in ['basico', 'admin'] %}
+        <a href="{{ url_for('exportar_excel', tipo='impresoras', filtro=filtro, valor=valor, edificio=filtro_edificio, piso=filtro_piso) }}"
+            class="exportar-btn">
+            <i class="fas fa-file-excel"></i> Exportar Listado
+        </a>
+        {% endif %}
+    </div>
+</form>
+
+<!-- tabla de impresoras registradas -->
+<table id="tabla-impresoras" class="display" border="2">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>N° Serie</th>
+            <th>Es alquilada?</th>
+            <th>Edificio</th>
+            <th>Piso</th>
+            {% if current_user.role in ['basico', 'admin'] %}<th>Servidor</th>{% endif %}
+            {% if current_user.role in ['basico', 'admin'] %}<th>IP</th>{% endif %}
+            <th>Descripcion</th>
+            {% if current_user.role in ['basico', 'admin'] %}<th>Acciones</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for impresora in impresoras %}
+        <tr>
+            <td>{{ impresora.nombre }}</td>
+            <td>{{ impresora.numero_serie }}</td>
+            <td>{% if impresora.alquilada %} Sí
+                {% else %} No
+                {% endif %}
+            </td>
+            <td>{{ impresora.edificio }}</td>
+            <td>{{ impresora.piso }}</td>
+            {% if current_user.role in ['basico', 'admin'] %}<td>{{ impresora.servidor if impresora.servidor else '-' }}</td>{% endif %}
+            {% if current_user.role in ['basico', 'admin'] %}
+            <td>{% if impresora.ip %}
+                <a href="{{ impresora.ip }}" target="_blank">{{ impresora.ip }}</a>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            {% endif %}
+            <td>{{ impresora.descripcion if impresora.descripcion else '-' }}</td>
+            {% if current_user.role in ['basico', 'admin'] %}
+            <td>
+                <form id="eliminarForm{{ impresora.id }}" action="/eliminar_impresora/{{ impresora.id }}" method="post" style="display:inline;">
+                    <button type="button" class="eliminar" onclick="confirmarEliminacion({{ impresora.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                </form>
+                <button type="button" onclick="abrirVentana('{{ url_for( 'impresoras.editar_impresora', id=impresora.id ) }}')"><i class="fas fa-edit"></i> Editar</button>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </tbody>
+</table>
+{% endblock %}

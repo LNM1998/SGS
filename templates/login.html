@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Login</title>
+</head>
+
+<body>
+    {% if mensaje %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ mensaje }}',
+            confirmButtonColor: '#d9534f',
+            confirmButtonText: 'OK'
+        });
+    </script>
+    {% endif %}
+    <form method="POST">
+        <div class="top-bar"></div>
+        <div class="content">
+            {{ form.hidden_tag() }}
+
+            <h2>Sistema de Gestion Soporte</h2>
+
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                {{ form.username(size=32, placeholder="Usuario") }}
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                {{ form.password(size=32, placeholder="Contraseña") }}
+            </div>
+
+            <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+
+            <p><button type="submit" class="btn-submit">{{ form.submit.label }}</button></p>
+
+            <!-- Leyenda para cambiar contraseña -->
+            <!--<p>¿Olvidaste tu contraseña? <a href="{{ url_for('cambiar_contrasena') }}">Cambiar contraseña</a></p>-->
+        </div>
+    </form>
+
+    <!-- Barra inferior con logo -->
+    <div class="bottom-bar">
+        <text>@lnmunioz</text>
+        <img src="{{ url_for('static', filename='logo-enacom-nuevo.png') }}" alt="Logo Inferior">
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Cifrar la contraseña antes de enviarla
+        const passwordField = document.getElementById('password');
+        const encryptedPassword = CryptoJS.AES.encrypt(passwordField.value, 'clave_secreta').toString();
+
+        // Crear un campo oculto con la contraseña cifrada
+        const encryptedInput = document.createElement('input');
+        encryptedInput.type = 'hidden';
+        encryptedInput.name = 'password';
+        encryptedInput.value = encryptedPassword;
+
+        // Reemplazar la contraseña original
+        passwordField.parentNode.replaceChild(encryptedInput, passwordField);
+
+        // Enviar el formulario
+        this.submit();
+    });
+</script>
+
+</html>

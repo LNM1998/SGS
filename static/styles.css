@@ -1,0 +1,797 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f0f0;
+    text-align: center;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+h1 {
+    color: #333;
+}
+
+.parrafo-resumen {
+    background-color: #f1f5f9; /* azul grisáceo suave */
+    border-left: 5px solid #1e3a8a; /* azul oscuro */
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #1e293b; /* gris azulado oscuro */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin: 1rem 0;
+    margin-bottom: 40px;
+}
+
+table {
+    width: 100%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+    min-width: 600px; /* evita que las columnas se achiquen demasiado */
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+th {
+    background: #001166;
+    color: white;
+}
+
+button {
+    background: #218838;
+    font-size: 14px;
+    /* Ajusta el tamaño del texto */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #18752c;
+}
+
+button.eliminar {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+button.eliminar:hover {
+    background: #c82333;
+}
+
+.exportar-btn {
+    display: inline-block;
+    font-size: 14px;
+    /* Ajusta el tamaño del texto */
+    padding: 5px 10px;
+    background-color: #218838;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+}
+
+.exportar-btn:hover {
+    background-color: #18752c;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input,
+select {
+    padding: 5px;
+    margin: 5px;
+}
+
+/* ------------------- BARRA SUPERIOR ------------------- */
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 500 !important;
+    /* Baja el z-index de los controles */
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    /* Separa los elementos */
+    align-items: center;
+    background-color: #001166;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    flex-wrap: wrap;
+    /* Asegura que el bottom bar esté por encima del mapa */
+}
+
+/* Contenedor de las opciones del lado izquierdo */
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Estilos generales para la lista de navegación */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    /* Espaciado entre los elementos */
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap; /* permite que se acomoden si no entran */
+}
+
+.nav-links li {
+    position: relative;
+}
+
+/* Estilos de los enlaces */
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s;
+}
+
+.nav-links a i {
+    margin-right: 8px;
+}
+
+.nav-links a:hover {
+    background: #002288;
+    border-radius: 5px;
+}
+
+/* ------------------- MENÚ DESPLEGABLE ------------------- */
+
+/* Mantener el menú principal desplegable */
+.dropdown {
+    position: relative;
+}
+
+/* Estilo general del menú desplegable */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    /* Desplegar hacia abajo */
+    left: 0;
+    background: #003399;
+    min-width: 200px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1000;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Elementos del menú */
+.dropdown-content li {
+    display: block;
+    width: 100%;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Hover en los enlaces */
+.dropdown-content a:hover {
+    background: #001166;
+}
+
+/* Ajustar posición del submenú */
+.dropdown .dropdown {
+    position: relative;
+}
+
+.dropdown .dropdown-content .dropdown {
+    position: relative;
+}
+
+/* Submenú hacia la derecha */
+.dropdown .dropdown-content .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    /* Desplegar hacia la derecha */
+    margin: 0;
+    border-radius: 5px;
+}
+
+/* Mantener el menú abierto mientras esté sobre él */
+.dropdown:hover>.dropdown-content,
+.dropdown-content li:hover>.dropdown-content {
+    display: block;
+}
+
+/* Evitar el espacio muerto entre menús */
+.dropdown-content li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Ajustar área activa del submenú */
+.dropdown-content li:hover {
+    background: #001166;
+}
+
+.dropdown-content li:hover>.dropdown-content {
+    margin-left: 0;
+    margin-top: 0;
+    /* Sin separación vertical */
+}
+
+/* .top-bar img {
+    height: 60px;
+} */
+/* Mantener el menú principal desplegable */
+.dropdown-notebook {
+    position: relative;
+}
+
+/* Estilo general del menú desplegable */
+.dropdown-content-notebook {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #003399;
+    width: 120px; /* Tamaño reducido */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 2000;
+    padding: 5px 0;
+    margin: 0;
+}
+
+/* Elementos del menú */
+.dropdown-content-notebook li {
+    display: block;
+    width: 100%;
+}
+
+.dropdown-content-notebook li button {
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    text-align: left;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.dropdown-content-notebook li button:hover {
+    background-color: #001166;
+}
+
+/* Mantener el menú abierto mientras esté sobre él */
+.dropdown-notebook:hover>.dropdown-content-notebook,
+.dropdown-content-notebook li:hover>.dropdown-content-notebook {
+    display: block;
+}
+
+/* 🔹 Barra inferior */
+.bottom-bar {
+    background-color: #001166;
+    z-index: 1000;
+    /* Asegura que el bottom bar esté por encima del mapa */
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 3px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.bottom-bar img {
+    height: 35px;
+}
+
+.bottom-bar text {
+    text-align: left;
+}
+
+/* Tarjeta de logs */
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Cabecera */
+.card-header {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Botón de descargar logs */
+.card-header a.btn-success {
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+/* Cuerpo de los logs */
+.card-body {
+    padding: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #fafafa;
+    border-top: 1px solid #ddd;
+}
+
+/* Estilo de cada entrada de log */
+.log-entry {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+/* Colores según el nivel del log */
+.log-error {
+    background: #ffcccc;
+    color: #a80000;
+    border-left: 5px solid #a80000;
+}
+
+.log-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 5px solid #856404;
+}
+
+.log-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left: 5px solid #0c5460;
+}
+
+/* Formulario de búsqueda */
+form.row {
+    margin-bottom: 15px;
+}
+
+/* Estilos de los botones */
+.btn {
+    padding: 8px 15px;
+}
+
+/* Paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 10px 0;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+    color: #007bff;
+    background-color: white;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Estilos pagina proveedores */
+
+#map {
+    z-index: 0 !important;
+    /* Asegura que el mapa no se sobreponga */
+}
+
+.map-container {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+}
+
+.card1 {
+    margin-bottom: 25px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.card1:hover {
+    transform: scale(1.03);
+}
+
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+#tabla-articulos input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+select option[value="resuelto"] {
+    background: rgba(0, 252, 84, 0.3);
+}
+
+select option[value="en espera"] {
+    background: rgba(252, 252, 5, 0.3);
+}
+
+select option[value="sin responder"] {
+    background: rgba(250, 63, 63, 0.3);
+}
+
+.estado-en-espera {
+    background-color: #fff346;
+    /* Amarillo */
+    color: #000;
+    /* Texto negro */
+}
+
+.estado-resuelto {
+    background-color: #8fe388;
+    /* Verde */
+    color: #000;
+}
+
+.estado-cancelado {
+    background-color: #ff7575;
+    /* Rojo */
+    color: #000;
+}
+
+.estado-entrega-definitiva {
+    background-color: #87CEFA;
+    /* celeste */
+    color: #000;
+}
+
+.fila-verde {
+    background-color: #8fe388 !important;
+    /* Verde claro */
+}
+
+.fila-blanca {
+    background-color: #FFFFFF !important;
+    /* Blanco */
+}
+
+.fila-naranja {
+    background-color: #FFA07A !important;
+    /* Naranja claro */
+}
+
+.fila-roja {
+    background-color: #ff7575 !important;
+    /* Rojo */
+}
+
+.fila-gris {
+    background-color: #D3D3D3 !important;
+    /* Gris */
+}
+
+.fila-celeste {
+    background-color: #87CEFA !important;
+    /* Celeste */
+}
+
+.fila-amarilla {
+    background-color: #fff346 !important;
+    /* Celeste */
+}
+
+#graficoEquipos {
+    width: 1700px !important;
+    height: 750px !important;
+
+}
+
+.estado-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.estado {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.actualizada {
+    background-color: #8fe388;
+}
+
+.baja {
+    background-color: #FFA07A;
+}
+
+.perdida {
+    background-color: #87CEFA;
+}
+
+.robada {
+    background-color: #D3D3D3;
+}
+
+.rota {
+    background-color: #FF6347;
+}
+
+#btn-agregar {
+    display: inline-flex;
+    flex-direction: column;
+    /* Coloca los elementos en columna */
+    align-items: center;
+    /* Centra horizontalmente */
+    justify-content: center;
+    /* Centra verticalmente */
+    padding: 10px 20px;
+    background-color: #218838;
+    /* Color de fondo */
+    color: white;
+    /* Color del texto */
+    text-decoration: none;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+#btn-agregar:hover {
+    background-color: #18752c;
+}
+
+#btn-agregar i {
+    font-size: 40px;
+}
+
+#btn-agregar span {
+    font-size: 12px;
+    /* Tamaño del texto */
+}
+
+.btn-submit {
+    background-color: #218838;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-submit:hover {
+    background-color: #18752c;
+}
+
+.form-alineado {
+    text-align: left;
+    margin: 0 auto;
+    width: 50%;
+    /* Ajusta el ancho según sea necesario */
+}
+
+.form-alineado input,
+.form-alineado select,
+.form-alineado button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.filtros-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Espacio entre elementos */
+    margin-bottom: 5px;
+    /* Espacio debajo del contenedor */
+}
+
+.filtros-container button,
+.filtros-container select,
+.filtros-container input {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filtros-container .dataTables_filter,
+.filtros-container .dataTables_length {
+    margin-left: auto;
+    /* Alinea el control de paginación a la derecha */
+}
+
+.filtros-container .dataTables_filter label,
+.filtros-container .dataTables_length label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 50%;
+}
+
+.tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    /* Ajustar posición arriba del elemento */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: 1.0em;
+    /* Tamaño de fuente más grande */
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.tooltip:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.form-select {
+    width: auto;
+    display: inline-block;
+    margin-right: 5px;
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+}
+
+/* Ajustar contenido para no quedar debajo de la barra */
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* Para que el contenido se apile verticalmente */
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 15px;
+}
+
+.content h1 {
+    margin-top: 20px;
+}
+
+/* Menús o barras en columnas para celulares */
+@media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+    }
+  
+    .column, .col {
+      width: 100% !important;
+    }
+  
+    .navbar, .topbar, .sidebar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .top-bar {
+        height: auto;        /* 👈 Esto permite que crezca según el contenido */
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 20px;
+        gap: 10px;           /* Separación entre elementos */
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-links a {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .nav-left, .nav-right {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Tablas responsivas */
+    table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    tbody td {
+        display: block;
+        text-align: left;
+        padding: 5px;
+        position: relative;
+    }
+  }

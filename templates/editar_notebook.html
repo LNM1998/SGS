@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Notebook</title>
+</head>
+
+<body>
+    <h1>Editar notebook</h1>
+    <form class="form-alineado" action="/actualizar_notebook/{{ notebook.id }}" method="post">
+        <label for="modelo">Modelo:</label>
+        <select name="modelo" required>
+            <option value="dell i5" {% if notebook.modelo == "dell i5" %}selected{% endif %}>Dell Latitude 3520 i5</option>
+            <option value="dell i7" {% if notebook.modelo == "dell i7" %}selected{% endif %}>Dell Latitude 5520 i7</option>
+            <option value="dell i7 diseno" {% if notebook.modelo == "dell i7 diseno" %}selected{% endif %}>Dell Precision 3561 i7</option>
+            <option value="exo i5" {% if notebook.modelo == "exo i5" %}selected{% endif %}>Exo Smart Pro Q6 i5</option>
+            <option value="exo i7" {% if notebook.modelo == "exo i7" %}selected{% endif %}>Exo Smart Pro Q6 i7</option>
+        </select>
+        <label for="inventario">N° de Inventario:</label>
+        <input type="text" name="inventario" value="{{ notebook.inventario }}" placeholder="N° Inventario" required>
+        <label for="numero_serie">N° de Serie:</label>
+        <input type="text" name="numero_serie" value="{{ notebook.numero_serie }}" placeholder="N° de Serie" required>
+        <label for="estado">Estado:</label>
+        <select name="estado" required>
+            <option value="">Estado</option>
+            <option value="fisica" {% if notebook.estado=="fisica" %}selected{% endif %}>Fisica</option>
+            <option value="asignada" {% if notebook.estado=="asignada" %}selected{% endif %}>Asignada</option>
+            <option value="no devuelta" {% if notebook.estado=="no devuelta" %}selected{% endif %}>No Devuelta</option>
+            <option value="rota" {% if notebook.estado=="rota" %}selected{% endif %}>Rota</option>
+            <option value="robada" {% if notebook.estado=="robada" %}selected{% endif %}>Robada</option>
+            <option value="perdida" {% if notebook.estado=="perdida" %}selected{% endif %}>Perdida</option>
+        </select>
+        <label for="usuario">Usuario:</label>
+        <input type="text" name="usuario" value="{{ notebook.usuario }}" placeholder="Usuario">
+        <label for="direccion">Direccion:</label>
+        <select name="direccion">
+            <option value="">Direccion</option>
+            <option value="intervencion" {% if notebook.direccion=="intervencion" %}selected{% endif %}>Intervención</option>
+            <option value="sistemas" {% if notebook.direccion=="sistemas" %}selected{% endif %}>Dirección General de Sistemas Informaticos</option>
+            <option value="fomento" {% if notebook.direccion=="fomento" %}selected{% endif %}>Dirección Nacional de Fomento y Desarrollo</option>
+            <option value="administracion" {% if notebook.direccion=="administracion" %}selected{% endif %}>Dirección General de Administración</option>
+            <option value="rrhh" {% if notebook.direccion=="rrhh" %}selected{% endif %}>Dirección General de Recursos Humanos</option>
+            <option value="juridicos" {% if notebook.direccion=="juridicos" %}selected{% endif %}>Dirección General de Asuntos Juridicos y Regulatorios</option>
+            <option value="planificacion" {% if notebook.direccion=="planificacion" %}selected{% endif %}>Dirección Nacional de Planificación y Convergencia</option>
+            <option value="control" {% if notebook.direccion=="control" %}selected{% endif %}>Dirección Nacional de Control y Fiscalizacion</option>
+            <option value="postales" {% if notebook.direccion=="postales" %}selected{% endif %}>Dirección Nacional de Servicios Postales</option>
+            <option value="institucionales" {% if notebook.direccion=="institucionales" %}selected{% endif %}>Dirección General de Asuntos Institucionales</option>
+            <option value="audiovisuales" {% if notebook.direccion=="audiovisuales" %}selected{% endif %}>Dirección Nacional de Servicios Audiovisuales</option>
+            <option value="competencia" {% if notebook.direccion=="competencia" %}selected{% endif %}>Dirección Nacional de Desarrollo de la Competencia en Redes</option>
+            <option value="autorizaciones" {% if notebook.direccion=="autorizaciones" %}selected{% endif %}>Dirección Nacional de Autorizaciones y Registros TIC</option>
+            <option value="delegaciones" {% if notebook.direccion=="delegaciones" %}selected{% endif %}>Dirección Nacional de Atencion de Usuarios</option>
+            <option value="auditoria" {% if notebook.direccion=="auditoria" %}selected{% endif %}>Unidad de Auditoria Interna</option>
+            <option value="ccte" {% if notebook.direccion=="ccte" %}selected{% endif %}>Centro De Comprobación Técnica De Emisiones</option>
+        </select>
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha" value="{{ notebook.fecha.strftime('%Y-%m-%d') if notebook.fecha else '' }}">
+        <label for="descripcion">Descripcion:</label>
+        <input type="text" name="descripcion" value="{{ notebook.descripcion if notebook.descripcion else ''}}" placeholder="Descripcion (opcional)">
+        <button type="submit">Actualizar Notebook</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

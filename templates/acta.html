@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acta</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+</head>
+
+<body>
+    <div class="content">
+        <div class="toolbar">
+            {% if notebook.archivo_pdf %}
+                <h2 id="pdf-title"></h2>
+    
+                <div class="zoom-controls" style="display: flex; align-items: center; gap: 10px;">
+                    <button id="download-btn" style="display: none;" onclick="downloadPDF()">📥 Descargar PDF</button>
+                    <button onclick="zoomOut()"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                    <span id="zoom-level">100%</span>
+                    <button onclick="zoomIn()"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    {% if current_user.role in ['basico', 'admin'] %}
+                    <button class="eliminar" onclick="deletePDF({{ notebook.id }})">Eliminar</button>
+                    {% endif %}
+                </div> 
+            {% else %}
+                <h1>No hay acta cargada</h1>
+                <form id="upload-form" action="{{ url_for('notebooks.upload_file', notebook_id=notebook.id) }}" method="post" enctype="multipart/form-data" style="text-align: left;">
+                    <input type="file" name="file" accept="application/pdf"><button type="submit">Subir PDF</button>
+                </form>
+                <a href="#" onclick="loadPDF('uploads/actas_firmadas/{{ file }}', '{{ file }}')">
+                    {{ file }}
+                </a>
+                <p style="font-size: 1.2rem;">No hay acta cargada para esta notebook.</p>
+            {% endif %}
+        </div>
+    
+        <div id="pdf-viewer">
+            {% if notebook.archivo_pdf %}
+            <script>
+                window.addEventListener("DOMContentLoaded", function () {
+                    loadPDF('/uploads/actas_firmadas/{{ notebook.archivo_pdf.split("/")[-1] }}', '{{ notebook.archivo_pdf.split("/")[-1] }}');
+                });
+            </script>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- PDF.js -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        let currentPDF = null;
+        let currentScale = 1.5; // Escala inicial
+
+        let currentFilename = ''; // Guardar el nombre del archivo actual
+
+        function loadPDF(url, filename) {
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const pdfTitle = document.getElementById('pdf-title');
+            const downloadBtn = document.getElementById('download-btn');
+
+            pdfViewer.innerHTML = '';
+            currentScale = 1.5;
+            currentFilename = filename;
+
+            // Mostrar el título del PDF
+            pdfTitle.innerText = filename;
+
+            // Mostrar el botón de descarga
+            downloadBtn.style.display = 'block';
+            downloadBtn.setAttribute('data-url', url);
+
+            // Cargar el PDF
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                currentPDF = pdf;
+                renderPages();
+            });
+        }
+
+        function renderPages() {
+            const pdfViewer = document.getElementById('pdf-viewer');
+            pdfViewer.innerHTML = '';
+
+            for (let pageNum = 1; pageNum <= currentPDF.numPages; pageNum++) {
+                currentPDF.getPage(pageNum).then(page => {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    const viewport = page.getViewport({ scale: currentScale });
+
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    pdfViewer.appendChild(canvas);
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    });
+                });
+            }
+
+            document.getElementById('zoom-level').innerText = Math.round(currentScale * 100) + '%';
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            renderPages();
+        }
+
+        function zoomOut() {
+            if (currentScale > 0.5) {
+                currentScale -= 0.25;
+                renderPages();
+            }
+        }
+
+        function deletePDF(notebookId) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción eliminará el acta PDF asociada a la notebook.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/delete_pdf/${notebookId}`, { method: 'POST' })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Eliminado', data.message, 'success').then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', data.message || 'No se pudo eliminar el PDF.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error', 'Hubo un problema al eliminar el PDF.', 'error');
+                        });
+                }
+            });
+        }
+
+
+        function downloadPDF() {
+            const downloadBtn = document.getElementById('download-btn');
+            const pdfUrl = downloadBtn.getAttribute('data-url');
+
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = currentFilename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Manejar clics en los enlaces de PDF
+        document.querySelectorAll('.pdf-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pdfUrl = e.target.getAttribute('data-src');
+                loadPDF(pdfUrl);
+            });
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', function (event) {
+            event.preventDefault();  // Evitar el envío tradicional del formulario
+
+            const formData = new FormData(this);
+
+            fetch("{{ url_for('notebooks.upload_file', notebook_id=notebook.id) }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'  // Para identificar solicitudes AJAX
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: data.message,
+                    }).then(() => {
+                        window.location.href = "{{ url_for('notebooks.ver_acta', id=notebook.id) }}";  // Redirigir después de la alerta
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error al subir el archivo.',
+                });
+            });
+        });
+
+        // Función de búsqueda
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const fileList = document.getElementById('fileList').getElementsByTagName('li');
+
+            Array.from(fileList).forEach(li => {
+                const fileName = li.textContent.toLowerCase();
+                li.style.display = fileName.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+    </script>
+
+</body>
+
+
+</html>

@@ -1,0 +1,178 @@
+{% extends "index.html" %}
+
+{% block title %}Notebooks{% endblock %}
+
+{% block content %}
+<h1>Notebooks Registradas</h1>
+{% if current_user.role in ['basico', 'admin'] %}
+<button id="btn-agregar" onclick="abrirVentana('{{ url_for('notebooks.agregar_notebook') }}')">
+    <i class="fas fa-plus"></i>
+    <span>AGREGAR</span>
+</button>
+{% endif %}
+<!-- Formulario de búsqueda -->
+<form action="/notebooks" method="get">
+    <div class="filtros-container">
+        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
+            <option value="">Filtro de Busqueda</option>
+            <option value="modelo" {% if filtro=='modelo' %}selected{% endif %}>Modelo</option>
+            <option value="inventario" {% if filtro=='inventario' %}selected{% endif %}>Inventario</option>
+            <option value="numero_serie" {% if filtro=='numero_serie' %}selected{% endif %}>Numero de Serie</option>
+            <option value="estado" {% if filtro=='estado' %}selected{% endif %}>Estado</option>
+            <option value="usuario" {% if filtro=='usuario' %}selected{% endif %}>Usuario</option>
+            <option value="direccion" {% if filtro=='direccion' %}selected{% endif %}>Direccion</option>
+            <option value="descripcion" {% if filtro=='descripcion' %}selected{% endif %}>Descripcion</option>
+        </select>
+
+        <!-- Campo de texto (por defecto) -->
+        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor"
+            style="display: none;">
+
+        <!-- Lista desplegable para Versión de Windows (oculta por defecto) -->
+        <select id="filtro_estado_notebook" name="estado" style="display: none;">
+            <option value="">Todas</option>
+            <option value="fisica" {% if valor=='fisica' %}selected{% endif %}>Fisica</option>
+            <option value="asignada" {% if valor=='asignada' %}selected{% endif %}>Asignada</option>
+            <option value="no devuelta" {% if valor=='no devuelta' %}selected{% endif %}>No Devuelta</option>
+            <option value="rota" {% if valor=='rota' %}selected{% endif %}>Rota</option>
+            <option value="robada" {% if valor=='robada' %}selected{% endif %}>Robada</option>
+            <option value="perdida" {% if valor=='perdida' %}selected{% endif %}>Perdida</option>
+        </select>
+
+        <select id="filtro_modelo" name="modelo" style="display: none">
+            <option value="">Todas</option>
+            <option value="dell i5" {% if valor=='dell i5' %}selected{% endif %}>Dell Latitude 3520 i5</option>
+            <option value="dell i7" {% if valor=='dell i7' %}selected{% endif %}>Dell Latitude 5520 i7</option>
+            <option value="dell i7 diseno" {% if valor=='dell i7 diseno' %}selected{% endif %}>Dell Precision 3561 i7
+            </option>
+            <option value="exo i5" {% if valor=='exo i5' %}selected{% endif %}>Exo Smart Pro Q6 i5</option>
+            <option value="exo i7" {% if valor=='exo i7' %}selected{% endif %}>Exo Smart Pro Q6 i7</option>
+        </select>
+
+        <select id="filtro_direccion" name="direccion" style="display: none">
+            <option value="">Direccion</option>
+            <option value="intervencion" {% if valor=='intervencion' %}selected{% endif %}>Intervencion</option>
+            <option value="sistemas" {% if valor=='sistemas' %}selected{% endif %}>Dirección General de Sistemas Informaticos</option>
+            <option value="fomento" {% if valor=='fomento' %}selected{% endif %}>Dirección Nacional de Fomento y Desarrollo</option>
+            <option value="administracion" {% if valor=='administracion' %}selected{% endif %}>Dirección General de Administración</option>
+            <option value="rrhh" {% if valor=='rrhh' %}selected{% endif %}>Dirección General de Recursos Humanos</option>
+            <option value="juridicos" {% if valor=='juridicos' %}selected{% endif %}>Dirección General de Asuntos Juridicos y Regulatorios</option>
+            <option value="planificacion" {% if valor=='planificacion' %}selected{% endif %}>Dirección Nacional de Planificación y Convergencia</option>
+            <option value="control" {% if valor=='control' %}selected{% endif %}>Dirección Nacional de Control y Fiscalizacion</option>
+            <option value="postales" {% if valor=='postales' %}selected{% endif %}>Dirección Nacional de Servicios Postales</option>
+            <option value="institucionales" {% if valor=='institucionales' %}selected{% endif %}>Dirección General de Asuntos Institucionales</option>
+            <option value="audiovisuales" {% if valor=='audiovisuales' %}selected{% endif %}>Dirección Nacional de Servicios Audiovisuales</option>
+            <option value="competencia" {% if valor=='competencia' %}selected{% endif %}>Dirección Nacional de Desarrollo de la Competencia en Redes</option>
+            <option value="autorizaciones" {% if valor=='autorizaciones' %}selected{% endif %}>Dirección Nacional de Autorizaciones y Registros TIC</option>
+            <option value="delegaciones" {% if valor=='delegaciones' %}selected{% endif %}>Dirección Nacional de Atencion de Usuarios</option>
+            <option value="auditoria" {% if valor=='auditoria' %}selected{% endif %}>Unidad de Auditoria Interna</option>
+            <option value="ccte" {% if valor=='ccte' %}selected{% endif %}>Centro De Comprobación Técnica De Emisiones</option>
+        </select>
+
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
+        {% if current_user.role in ['basico', 'admin'] %}
+        <a href="{{ url_for('exportar_excel', tipo='notebooks', notebooks=notebooks, filtro=filtro, valor=valor, estado=filtro_estado_notebook, modelo=filtro_modelo, direccion=filtro_direccion) }}"
+            class="exportar-btn">
+            <i class="fas fa-file-excel"></i> Exportar Listado
+        </a>
+        {% endif %}
+    </div>
+</form>
+
+<!-- tabla de notebooks registrados -->
+<table id="tabla-notebooks" class="display" border="1">
+    <thead>
+        <tr>
+            <th>Modelo</th>
+            <th>N° Inventario</th>
+            <th>N° Serie</th>
+            <th>Estado</th>
+            <th>Usuario</th>
+            <th>Direccion</th>
+            <th>Fecha</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for notebook in notebooks %}
+        <tr class="fila" data-estado="{{ notebook.estado }}">
+            <td>{% if notebook.modelo == 'dell i5' %} Dell Latitude 3520 i5
+                {% elif notebook.modelo == 'dell i7' %} Dell Latitude 5520 i7
+                {% elif notebook.modelo == 'dell i7 diseno' %} Dell Precision 3561 i7
+                {% elif notebook.modelo == 'exo i5' %} Exo Smart Pro Q6 i5
+                {% elif notebook.modelo == 'exo i7' %} Exo Smart Pro Q6 i7
+                {% endif %}
+            </td>
+            <td>{{ notebook.inventario }}</td>
+            <td>{{ notebook.numero_serie }}</td>
+            <td>{{ notebook.estado }}</td>
+            <td>{{ notebook.usuario }}</td>
+            <td>{% if notebook.direccion == 'intervencion' %} Intervención
+                {% elif notebook.direccion == 'sistemas' %} Dirección General de Sistemas Informaticos
+                {% elif notebook.direccion == 'fomento' %} Dirección Nacional de Fomento y Desarrollo
+                {% elif notebook.direccion == 'administracion' %} Dirección General de Administración
+                {% elif notebook.direccion == 'rrhh' %} Dirección General de Recursos Humanos
+                {% elif notebook.direccion == 'juridicos' %} Dirección General de Asuntos Juridicos y Regulatorios
+                {% elif notebook.direccion == 'planificacion' %} Dirección Nacional de Planificación y Convergencia
+                {% elif notebook.direccion == 'control' %} Dirección Nacional de Control y Fiscalizacion
+                {% elif notebook.direccion == 'postales' %} Dirección Nacional de Servicios Postales
+                {% elif notebook.direccion == 'institucionales' %} Dirección General de Asuntos Institucionales
+                {% elif notebook.direccion == 'audiovisuales' %} Dirección Nacional de Servicios Audiovisuales
+                {% elif notebook.direccion == 'competencia' %} Dirección Nacional de Desarrollo de la Competencia en Redes
+                {% elif notebook.direccion == 'autorizaciones' %} Dirección Nacional de Autorizaciones y Registros TIC
+                {% elif notebook.direccion == 'delegaciones' %} Dirección Nacional de Atencion de Usuarios
+                {% elif notebook.direccion == 'auditoria' %} Unidad de Auditoria Interna
+                {% elif notebook.direccion == 'ccte' %} Centro De Comprobación Técnica De Emisiones
+                {% endif %}
+            </td>
+            <td>{{ notebook.fecha.strftime('%d/%m/%Y') if notebook.fecha else '-' }}</td>
+            <td>{{ notebook.descripcion if notebook.descripcion else '-' }}</td>
+            <td>
+                <div class="dropdown-notebook">
+                    <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Opciones
+                    </button>
+                    <ul class="dropdown-content-notebook">
+                        <!-- Descargar Remito -->
+                        {% if current_user.role in ['basico', 'admin'] %}
+                        <li>
+                            <button type="button" onclick="abrirVentana('{{ url_for('notebooks.descargar_acta', id=notebook.id) }}')"><i class="fas fa-download"></i> Descargar Acta</button>                            
+                        </li>
+                        {% endif %}
+                        <!-- Subir Acta -->
+                        <li>
+                            <button type="button" onclick="abrirVentana('{{ url_for('notebooks.ver_acta', id=notebook.id) }}')"><i class="fas fa-file-pdf"></i> Ver acta</button>
+                        </li>
+                        <!-- Editar -->
+                        {% if current_user.role in ['basico', 'admin'] %}
+                        <li>
+                            <button type="button" onclick="abrirVentana('{{ url_for( 'notebooks.editar_notebook', id=notebook.id ) }}')"><i class="fas fa-edit"></i> Editar</button>
+                        </li>
+                        {% endif %}
+                        <!-- Eliminar -->
+                        {% if current_user.role in ['basico', 'admin'] %}
+                        <li>
+                            <form id="eliminarForm{{ notebook.id }}" action="/eliminar_notebook/{{ notebook.id }}" method="post" style="display:inline;">
+                                <button type="button" class="eliminar" onclick="confirmarEliminacion({{ notebook.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                            </form>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="estado-leyenda">
+    <span class="estado actualizada"></span> <span>Fisica</span>
+    <span class="estado baja"></span> <span>No devuelta</span>
+    <span class="estado rota"></span> <span>Rota</span>
+    <span class="estado perdida"></span> <span>Perdida</span>
+    <span class="estado robada"></span> <span>Robada</span>
+</div> 
+
+{% endblock %}

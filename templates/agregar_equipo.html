@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Agregar Equipo</title>
+</head>
+
+<body>
+    <h1>Agregar Equipo</h1>
+    <!-- Formulario para agregar un impresora -->
+    <form class="form-alineado" action="/agregar_equipo" method="post">
+        <div>
+            <label for="edificio">Edificio:</label>
+            <select name="edificio" id="edificio" onchange="actualizarPisos()">
+                <option value="">Seleccione un edificio</option>
+                <option value="Peru">Peru</option>
+                <option value="Lima">Lima</option>
+                <option value="CAU">CAU</option>
+                <option value="ISER">ISER</option>
+                <option value="CCTE">CCTE</option>
+                <option value="Museo">Museo</option>
+                <option value="Deposito Mataderos">Deposito Mataderos</option>
+                <option value="Deposito Saldias">Deposito Saldias</option>
+            </select>
+            <label for="piso">Piso:</label>
+            <select name="piso" id="piso">
+                <option value="">Seleccione un piso</option>
+            </select>
+            <label for="maquina_actual">Maquina Actual:</label>
+            <input type="text" name="maquina_actual" placeholder="Máquina Actual" required>
+            <label for="numero_serie">Número de Serie:</label>
+            <input type="text" id="numero_serie" name="numero_serie" placeholder="(opcional)">
+            <label for="version_windows">Version de Imagen:</label>
+            <input type="text" id="version_windows" name="version_windows" placeholder="Version de Imagen">
+            <label for="usuario">Usuario:</label>
+            <input type="text" name="usuario" placeholder="Usuario" required>
+            <label for="nombre_usuario">Nombre Completo del Usuario:</label>
+            <input type="text" name="nombre_usuario" placeholder="(opcional)">
+            <label for="fecha_actualizacion">Fecha Actualización:</label>
+            <input type="date" name="fecha_actualizacion">
+            <label for="maquina_anterior">Maquina Anterior:</label>
+            <input type="text" name="maquina_anterior" placeholder="(opcional)">
+            <label for="descripcion">
+                Descripción:<br>
+                <em>(Actualizada / Baja / Pendiente / Robada / Ninguna)</em>
+            </label>
+            <input type="text" name="descripcion" placeholder="(opcional)">
+        </div>
+
+        <button type="submit">Agregar Equipo</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

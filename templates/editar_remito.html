@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Remito</title>
+</head>
+<body>
+    <h1>Editar Remito</h1>
+    <form class="form-alineado" action="/actualizar_remito/{{ remito.id }}" method="POST">
+        <label for="estado">Estado:</label>
+        <select name="estado" required>
+            <option value="">Elija una opción</option>
+            <option value="pendiente" {% if remito.estado == "pendiente" %}selected{% endif %}>Pendiente</option>
+            <option value="devuelto" {% if remito.estado == "devuelto" %}selected{% endif %}>Devuelto</option>
+            <option value="entrega definitiva" {% if remito.estado == "entrega definitiva" %}selected{% endif %}>Entrega Definitiva</option>
+        </select>
+
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha" value="{{ remito.fecha.strftime('%Y-%m-%d') }}">
+
+        <label for="remitente">Remitente:</label>
+        <input type="text" name="remitente" value="{{ remito.remitente }}">
+
+        <label for="destinatario">Destinatario:</label>
+        <input type="text" name="destinatario" value="{{ remito.destinatario }}">
+
+        <h3>Artículos en el remito</h3>
+        <table id="tabla-articulos" class="display" border="2">
+            <thead>
+                <tr>
+                    <th>Cantidad</th>
+                    <th>Número de Serie</th>
+                    <th>Descripción</th>
+                    <th>Observación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for articulo in remito.articulos %}
+                <tr>
+                    <td><input type="number" name="cantidad[]" value="{{ articulo.cantidad }}" class="articulo-cantidad"></td>
+                    <td><input type="text" name="numero_serie[]" value="{{ articulo.numero_serie }}" class="articulo-numero-serie">
+                    </td>
+                    <td><input type="text" name="descripcion[]" value="{{ articulo.descripcion }}" class="articulo-descripcion">
+                    </td>
+                    <td><input type="text" name="observacion_articulo[]" value="{{ articulo.observacion }}"
+                            class="articulo-observacion"></td>
+                    <td><button type="button" onclick="eliminarArticulo(this)" style="background-color: red; color: white;">Eliminar</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" onclick="agregarArticulo1()">Agregar Artículo</button>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

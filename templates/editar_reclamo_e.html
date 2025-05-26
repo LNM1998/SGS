@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Reclamo External</title>
+</head>
+<body>
+    <h1>Editar Reclamo</h1>
+    <form class="form-alineado" action="/actualizar_reclamo_e/{{ reclamoe.id }}" method="post">
+        <label for="numero_serie">N° de Serie:</label>
+        <input type="text" name="numero_serie" value="{{ reclamoe.numero_serie }}" required>
+        <label for="asunto">Asunto:</label>
+        <select name="asunto" required>
+            <option value="">Elija una opción</option>
+            <option value="pedido_toner" {% if reclamoe.asunto == "pedido_toner" %}selected{% endif %}>Pedido de Toner</option>
+            <option value="pedido_garantia" {% if reclamoe.asunto == "pedido_garantia" %}selected{% endif %}>Pedido de Garantia</option>
+        </select>
+        <label for="numero_referencia">N° de Referencia:</label>
+        <input type="text" name="numero_referencia" value="{{ reclamoe.numero_referencia if reclamoe.numero_referencia else '' }}" placeholder="N° de Referencia (opcional)">
+        <label for="estado">Estado:</label>
+        <select name="estado" required>
+            <option value="">Elija una opción</option>
+            <option value="resuelto" {% if reclamoe.estado == "resuelto" %}selected{% endif %}>Resuelto</option>
+            <option value="en espera" {% if reclamoe.estado == "en espera" %}selected{% endif %}>En Espera</option>
+            <option value="sin responder" {% if reclamoe.estado == "sin responder" %}selected{% endif %}>Sin Responder</option>
+        </select>
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha" value="{{ reclamoe.fecha.strftime('%Y-%m-%d') if reclamoe.fecha else '' }}">
+        <label for="edificio">Edificio:</label>
+        <select id="filtro_edificio" name="edificio" onchange="actualizarPisosFiltro()" required>
+            <option value="">Seleccione un edificio</option>
+            <option value="Peru" {% if reclamoe.edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if reclamoe.edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if reclamoe.edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if reclamoe.edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if reclamoe.edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if reclamoe.edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if reclamoe.edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if reclamoe.edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+        <label for="piso">Piso:</label>
+        <select id="filtro_piso" name="piso" required onchange="actualizarPisosFiltro()">
+            <option value="">Seleccione un piso</option>
+            {% if reclamoe.piso %}
+            <option value="{{ reclamoe.piso }}" selected>{{ reclamoe.piso }}</option>
+            {% endif %}
+        </select>
+        <label for="descripcion">Descripcion:</label>
+        <input type="text" name="descripcion" value="{{ reclamoe.descripcion if reclamoe.descripcion else '' }}">
+        <label for="tarea_realizada">Tarea Realizada:</label>
+        <input type="text" name="tarea_realizada" value="{{ reclamoe.tarea_realizada if reclamoe.tarea_realizada else '' }}">
+        <label for="contador">Contador:</label>
+        <input type="text" name="contador" value="{{ reclamoe.contador }}">
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

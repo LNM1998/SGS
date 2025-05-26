@@ -1,0 +1,92 @@
+{% extends "index.html" %}
+
+{% block title %}Hardware{% endblock %}
+
+{% block content %}
+<h1>Otros equipos</h1>
+<!-- Formulario de búsqueda -->
+{% if current_user.role in ['basico', 'admin'] %}
+<button id="btn-agregar" onclick="abrirVentana('{{ url_for('hardware.agregar_hardware') }}')">    
+    <i class="fas fa-plus"></i>
+    <span>AGREGAR</span>
+</button>
+{% endif %}
+<form action="/hardware" method="get">
+    <div class="filtros-container">
+        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
+            <option value="">Filtro de Busqueda</option>
+            <option value="edificio" {% if filtro=='edificio' %}selected{% endif %}>Edificio</option>
+            <option value="inventario" {% if filtro=='inventario' %}selected{% endif %}>Numero de Inventario</option>
+            <option value="numero_serie" {% if filtro=='numero_serie' %}selected{% endif %}>Numero de Serie</option>
+            <option value="usuario" {% if filtro=='usuario' %}selected{% endif %}>Usuario</option>
+            <option value="descripcion" {% if filtro=='descripcion' %}selected{% endif %}>Descripcion</option>
+        </select>
+    
+        <!-- Campo de texto (por defecto) -->
+        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor">
+    
+        <!-- Filtro de edificio (si aplica) -->
+        <select id="filtro_edificio" name="edificio" style="display: none;" onchange="actualizarPisosFiltro()">
+            <option value="">Todos los edificios</option>
+            <option value="Peru" {% if filtro_edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if filtro_edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if filtro_edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if filtro_edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if filtro_edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if filtro_edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if filtro_edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if filtro_edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+    
+        <!-- Lista desplegable para Piso (oculta por defecto) -->
+        <select id="filtro_piso" name="piso" style="display: none;">
+            <option value="">Seleccione un piso</option>
+        </select>
+    
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
+        {% if current_user.role in ['basico', 'admin'] %}
+        <a href="{{ url_for('exportar_excel', tipo='hardware', filtro=filtro, valor=valor, edificio=filtro_edificio, piso=filtro_piso) }}"
+            class="exportar-btn">
+            <i class="fas fa-file-excel"></i> Exportar Listado
+        </a>
+        {% endif %}
+    </div>
+</form>
+
+<!-- tabla de equipos registrados -->
+<table id="tabla-hardware" class="display" border="1">
+    <thead>
+        <tr>
+            <th>Edificio</th>
+            <th>Piso</th>
+            <th>Nombre</th>
+            <th>Número de Inventario</th>
+            <th>Número de Serie</th>
+            <th>Usuario</th>
+            <th>Descripcion</th>
+            {% if current_user.role in ['basico', 'admin'] %}<th>Acciones</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for hardware in hardware %}
+            <td>{{ hardware.edificio }}</td>
+            <td>{{ hardware.piso }}</td>
+            <td>{{ hardware.nombre }}</td>
+            <td>{{ hardware.inventario if hardware.inventario else '-'}}</td>
+            <td>{{ hardware.numero_serie if hardware.numero_serie else '-' }}</td>
+            <td>{{ hardware.usuario if hardware.usuario else '-' }}</td>
+            <td>{{ hardware.descripcion }}</td>
+            {% if current_user.role in ['basico', 'admin'] %}
+            <td>
+                <form id="eliminarForm{{ hardware.id }}" action="/eliminar_hardware/{{ hardware.id }}" method="post" style="display:inline;">
+                    <button type="button" class="eliminar" onclick="confirmarEliminacion({{ hardware.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                </form>                
+                <button type="button" onclick="abrirVentana('{{ url_for( 'hardware.editar_hardware', id=hardware.id ) }}')"><i class="fas fa-edit"></i> Editar</button>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>  
+{% endblock %}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Agregar Impresora</title>
+</head>
+
+<body>
+    <h1>Agregar Impresora</h1>
+    <!-- Formulario para agregar un impresora -->
+    <form class="form-alineado" action="/agregar_impresora" method="post">
+        <div>
+            <label for="nombre">Nombre de Impresora:</label>
+            <input type="text" name="nombre" placeholder="Nombre de Impresora" required>
+        </div>
+        <div>
+            <label for="numero_serie">N° de Serie:</label>
+            <input type="text" name="numero_serie" placeholder="N° de Serie" required>
+        </div>
+        <div>
+            <label for="alquilada">Es Alquilada?</label>
+            <select name="alquilada" required>
+                <option value="">Seleccione una opcion</option>
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+        <div>
+            <label for="edificio">Edificio:</label>
+            <select name="edificio" id="edificio" onchange="actualizarPisos()">
+                <option value="">Seleccione un edificio</option>
+                <option value="Peru">Peru</option>
+                <option value="Lima">Lima</option>
+                <option value="CAU">CAU</option>
+                <option value="ISER">ISER</option>
+                <option value="CCTE">CCTE</option>
+                <option value="Museo">Museo</option>
+                <option value="Deposito Mataderos">Deposito Mataderos</option>
+                <option value="Deposito Saldias">Deposito Saldias</option>
+            </select>
+        </div>
+        <div>
+            <label for="piso">Piso:</label>
+            <select name="piso" id="piso">
+                <option value="">Seleccione un piso</option>
+            </select>
+        </div>
+        <div>
+            <label for="servidor">Servidor:</label>
+            <input type="text" name="servidor" placeholder="Servidor">
+        </div>
+        <div>
+            <label for="ip">IP:</label>
+            <input type="text" name="ip" placeholder="IP">
+        </div>
+        <div>
+            <label for="descripcion">Descripción:</label>
+            <input type="text" name="descripcion" placeholder="Descripcion (opcional)">
+        </div>
+        <button type="submit">Agregar Impresora</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

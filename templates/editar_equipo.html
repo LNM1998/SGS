@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Equipo</title>
+</head>
+
+<body>
+    <h1>Editar Equipo: {{ equipo.maquina_actual }}</h1>
+    <form class="form-alineado" action="/actualizar_equipo/{{ equipo.id }}" method="post">
+        <label for="edificio">Edificio:</label>
+        <select id="filtro_edificio" name="edificio" required onchange="actualizarPisosFiltro()">
+            <option value="">Seleccione un edificio</option>
+            <option value="Peru" {% if equipo.edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if equipo.edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if equipo.edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if equipo.edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if equipo.edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if equipo.edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if equipo.edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if equipo.edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+        <label for="piso">Piso:</label>
+        <select id="filtro_piso" name="piso" required onfocus="actualizarPisosFiltro()">
+            <option value="">Seleccione un piso</option>
+            {% if equipo.piso %}
+                <option value="{{ equipo.piso }}" selected>{{ equipo.piso }}</option>
+            {% else %}
+                <option value="{{ equipo.piso }}" {% if equipo.edificio == filtro_edificio %}selected{% endif %}>{{ equipo.piso }}</option>
+            {% endif %}
+        </select>
+        <label for="maquina_actual">Maquina Actual:</label>
+        <input type="text" name="maquina_actual" value="{{ equipo.maquina_actual }}" required>
+        <label for="numero_serie">Número de Serie:</label>
+        <input type="text" id="numero_serie" name="numero_serie" value="{{ equipo.numero_serie }}">
+        <label for="version_windows">Versión de Imagen:</label>
+        <input type="text" id="version_windows" name="version_windows" value="{{ equipo.version_windows }}">
+        <label for="usuario">Usuario:</label>
+        <input type="text" name="usuario" value="{{ equipo.usuario }}" required>
+        <label for="nombre_usuario">Nombre Completo de Usuario:</label>
+        <input type="text" name="nombre_usuario" value="{{ equipo.nombre_usuario }}">
+        <label for="fecha_actualizacion">Fecha Actualización:</label>
+        <input type="date" name="fecha_actualizacion"
+            value="{{ equipo.fecha_actualizacion.strftime('%Y-%m-%d') if equipo.fecha_actualizacion else '' }}">
+        <label for="maquina_anterior">Maquina Anterior:</label>
+        <input type="text" name="maquina_anterior"
+            value="{{ equipo.maquina_anterior if equipo.maquina_anterior else '' }}">
+        <label for="descripcion">
+            Descripción:<br>
+            <em>(Actualizada / Baja / Pendiente / Robada / Ninguna)</em>
+        </label>
+        <input type="text" name="descripcion" value="{{ equipo.descripcion if equipo.descripcion else '' }}">
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

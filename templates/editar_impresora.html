@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Impresora</title>
+</head>
+<body>
+    <h1>Editar Impresora</h1>
+    <form class="form-alineado" action="/actualizar_impresora/{{ impresora.id }}" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" value="{{ impresora.nombre }}" placeholder="Nombre de Impresora" required>
+        <label for="numero_serie">N° de Serie:</label>
+        <input type="text" name="numero_serie" value="{{ impresora.numero_serie }}" placeholder="Numero de Serie" required>
+        <label for="alquilada">Es Alquilada?</label>
+        <select name="alquilada" required>
+            <option value="">Elija una opción</option>
+            <option value="1" {% if impresora.alquilada == True %}selected{% endif %}>Sí</option>
+            <option value="0" {% if impresora.alquilada == False %}selected{% endif %}>No</option>
+        </select>
+        <label for="edificio">Edificio:</label>
+        <select id="filtro_edificio" name="edificio" onchange="actualizarPisosFiltro()" required>
+            <option value="">Seleccione un edificio</option>
+            <option value="Peru" {% if impresora.edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if impresora.edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if impresora.edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if impresora.edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if impresora.edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if impresora.edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if impresora.edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if impresora.edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+        <label for="piso">Piso:</label>
+        <select id="filtro_piso" name="piso" required onclick="actualizarPisosFiltro()">
+            <option value="">Seleccione un piso</option>
+            {% if impresora.piso %}
+            <option value="{{ impresora.piso }}" selected>{{ impresora.piso }}</option>
+            {% endif %}
+        </select>
+        <label for="servidor">Servidor:</label>
+        <input type="text" name="servidor" value="{{ impresora.servidor if impresora.servidor else '' }}"placeholder="Servidor">
+        <label for="ip">IP:</label>
+        <input type="text" name="ip" value="{{ impresora.ip if impresora.ip else '' }}" placeholder="IP">
+        <label for="descripcion">Descripcion:</label>
+        <input type="text" name="descripcion" value="{{ impresora.descripcion if impresora.descripcion else '' }}" placeholder="Descripcion (opcional)">
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

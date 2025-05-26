@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Reclamo Bangho</title>
+</head>
+<body>
+    <h1>Editar Reclamo</h1>
+    <form class="form-alineado" action="/actualizar_reclamo_b/{{ reclamob.id }}" method="post">
+        <label for="numero_serie">N° de Serie:</label>
+        <input type="text" name="numero_serie" value="{{ reclamob.numero_serie }}" required>
+        <label for="asunto">Asunto:</label>
+        <input type="text" name="asunto" value="{{ reclamob.asunto }}" required>
+        <label for="numero_referencia">N° de Referencia:</label>
+        <input type="text" name="numero_referencia" value="{{ reclamob.numero_referencia }}" required>
+        <label for="estado">Estado:</label>
+        <select name="estado" required>
+            <option value="">Elija una opción</option>
+            <option value="resuelto" {% if reclamob.estado=='resuelto' %}selected{% endif %}>resuelto</option>
+            <option value="en espera" {% if reclamob.estado=='en espera' %}selected{% endif %}>en espera</option>
+            <option value="sin responder" {% if reclamob.estado=='sin responder' %}selected{% endif %}>sin responder</option>
+        </select>
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha" value="{{ reclamob.fecha.strftime('%Y-%m-%d') if reclamob.fecha else '' }}">
+        <label for="edificio">Edificio:</label>
+        <select id="filtro_edificio" name="edificio" onchange="actualizarPisosFiltro()" required>
+            <option value="">Seleccione un edificio</option>
+            <option value="Peru" {% if reclamob.edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if reclamob.edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if reclamob.edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if reclamob.edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if reclamob.edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if reclamob.edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if reclamob.edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if reclamob.edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+        <label for="piso">Piso:</label required>
+        <select id="filtro_piso" name="piso" onchange="actualizarPisosFiltro()">
+            <option value="">Seleccione un piso</option>
+            {% if reclamob.piso %}
+            <option value="{{ reclamob.piso }}" selected>{{ reclamob.piso }}</option>
+            {% endif %}
+        </select>
+        <label for="descripcion">Descripcion:</label>
+        <input type="text" name="descripcion" value="{{ reclamob.descripcion if reclamob.descripcion else '' }}">
+        <label for="tarea_realizada">Tarea Realizada:</label>
+        <input type="text" name="tarea_realizada" value="{{ reclamob.tarea_realizada if reclamob.tarea_realizada else '' }}">
+        <label for="equipo_utilizado">Equipo Utilizado:</label>
+        <input type="text" name="equipo_utilizado" value="{{ reclamob.equipo_utilizado if reclamob.equipo_utilizado else '' }}">
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
