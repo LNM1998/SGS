@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Hardware</title>
+</head>
+
+<body>
+    <h1>Editar Hardware</h1>
+    <form class="form-alineado" action="/actualizar_hardware/{{ hardware.id }}" method="post">
+        <label for="edificio">Edificio:</label>
+        <select id="filtro_edificio" name="edificio" onchange="actualizarPisosFiltro()" required>
+            <option value="">Seleccione un edificio</option>
+            <option value="Peru" {% if hardware.edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if hardware.edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if hardware.edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if hardware.edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if hardware.edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if hardware.edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if hardware.edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if hardware.edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+        <label for="piso">Piso:</label>
+        <select id="filtro_piso" name="piso" required onchange="actualizarPisosFiltro()">
+            <option value="">Seleccione un piso</option>
+            {% if hardware.piso %}
+            <option value="{{ hardware.piso }}" selected>{{ hardware.piso }}</option>
+            {% endif %}
+        </select>
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" value="{{ hardware.nombre }}" required>
+        <label for="inventario">Número de Inventario:</label>
+        <input type="text" id="inventario" name="inventario" value="{{ hardware.inventario if hardware.inventario else '' }}">
+        <label for="numero_serie">Número de Serie:</label>
+        <input type="text" id="numero_serie" name="numero_serie" value="{{ hardware.numero_serie if hardware.numero_serie else '' }}">
+        <label for="usuario">Usuario:</label>
+        <input type="text" name="usuario" value="{{ hardware.usuario if hardware.usuario else '' }}">
+        <label for="descripcion">Descripción:</label>
+        <input type="text" name="descripcion" value="{{ hardware.descripcion }}" required>
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

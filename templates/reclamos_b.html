@@ -1,0 +1,119 @@
+{% extends "index.html" %}
+
+{% block title %}Reclamos Bangho{% endblock %}
+
+{% block content %}
+<h1>Reclamos Bangho Registrados</h1>
+<button id="btn-agregar" onclick="abrirVentana('{{ url_for('reclamos_b.agregar_reclamo_b') }}')">    
+    <i class="fas fa-plus"></i>
+    <span>AGREGAR</span>
+</button>
+<!-- Formulario de búsqueda -->
+<form action="/reclamos_b" method="get">
+    <div class="filtros-container">
+        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
+            <option value="">Filtro de Busqueda</option>
+            <option value="edificio" {% if filtro=='edificio' %}selected{% endif %}>Edificio</option>
+            <option value="numero_serie" {% if filtro=='numero_serie' %}selected{% endif %}>Numero de Serie</option>
+            <option value="estado_r" {% if filtro=='estado_r' %}selected{% endif %}>Estado</option>
+            <option value="asunto" {% if filtro=='asunto' %}selected{% endif %}>Asunto</option>
+        </select>
+    
+        <!-- Campo de texto (por defecto) -->
+        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor">
+    
+        <!-- Lista desplegable para Versión de Windows (oculta por defecto) -->
+        <select id="filtro_estado_reclamos" name="estado_r" style="display: none;">
+            <option value="">Todas</option>
+            <option value="resuelto" {% if valor=='resuelto' %}selected{% endif %}>Resuelto</option>
+            <option value="en espera" {% if valor=='en espera' %}selected{% endif %}>En Espera</option>
+            <option value="sin responder" {% if valor=='sin responder' %}selected{% endif %}>Sin Responder</option>
+        </select>
+    
+        <!-- Filtro de edificio (si aplica) -->
+        <select id="filtro_edificio" name="edificio" style="display: none;" onchange="actualizarPisosFiltro()">
+            <option value="">Todos los edificios</option>
+            <option value="Peru" {% if filtro_edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if filtro_edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if filtro_edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if filtro_edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if filtro_edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if filtro_edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if filtro_edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if filtro_edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+    
+        <!-- Lista desplegable para Piso (oculta por defecto) -->
+        <select id="filtro_piso" name="piso" style="display: none;">
+            <option value="">Seleccione un piso</option>
+        </select>
+    
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
+        <a href="{{ url_for('exportar_excel', tipo='reclamos_bangho', filtro=filtro, valor=valor, estado=filtro_estado_reclamos, edificio=filtro_edificio, piso=filtro_piso) }}"
+            class="exportar-btn">
+            <i class="fas fa-file-excel"></i> Exportar Listado
+        </a>
+    </div>
+</form>
+
+<!-- tabla de equipos registrados -->
+<table id="tabla-reclamos-b" class="display" border="2">
+    <thead>
+        <tr>
+            <th>N° Serie</th>
+            <th>Asunto</th>
+            <th>N° Referencia</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Edificio</th>
+            <th>Piso</th>
+            <th>Descripcion</th>
+            <th>Tarea Realizada</th>
+            <th>Equipo utilizado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reclamob in reclamos %}
+        <tr>
+            <td>{{ reclamob.numero_serie }}</td>
+            <td>{{ reclamob.asunto }}</td>
+            <td>{{ reclamob.numero_referencia }}</td>
+            <td class="
+                {% if reclamob.estado == 'en espera' %}estado-en-espera
+                {% elif reclamob.estado == 'resuelto' %}estado-resuelto
+                {% elif reclamob.estado == 'sin responder' %}estado-cancelado
+                {% endif %}
+            ">
+                {{ reclamob.estado }}
+                <i class="
+                    {% if reclamob.estado == 'en espera' %}fa fa-spinner
+                    {% elif reclamob.estado == 'resuelto' %}fa fa-check
+                    {% elif reclamob.estado == 'sin responder' %}fa fa-times
+                    {% endif %}
+                "></i>
+            </td>
+            <td>{{ reclamob.fecha.strftime('%d/%m/%Y') if reclamob.fecha else '-' }}</td>
+            <td>{{ reclamob.edificio }}</td>
+            <td>{{ reclamob.piso }}</td>
+            <td>{{ reclamob.descripcion if reclamob.descripcion else '-' }}</td>
+            <td>{{ reclamob.tarea_realizada if reclamob.tarea_realizada else '-' }}</td>
+            <td>{{ reclamob.equipo_utilizado if reclamob.equipo_utilizado else '-' }}</td>
+            <td>
+                <form id="eliminarForm{{ reclamob.id }}" action="/eliminar_reclamo_b/{{ reclamob.id }}" method="post" style="display:inline;">
+                    <button type="button" class="eliminar" onclick="confirmarEliminacion({{ reclamob.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                </form>
+                <button type="button" onclick="abrirVentana('{{ url_for( 'reclamos_b.editar_reclamo_b', id=reclamob.id ) }}')"><i class="fas fa-edit"></i> Editar</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="estado-leyenda">
+    <span class="estado estado-resuelto"></span> <span>Resuelto</span>
+    <span class="estado estado-en-espera"></span> <span>En espera</span>
+    <span class="estado estado-cancelado"></span> <span>Sin responder</span>
+</div> 
+{% endblock %}

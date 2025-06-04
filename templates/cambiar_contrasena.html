@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Cambiar contraseña</title>
+</head>
+
+<body>
+    {% if mensaje %}
+    <script>
+        alert("{{ mensaje }}");
+    </script>
+    {% endif %}
+    <form method="POST">
+        {% if current_user.is_authenticated %}
+        <div class="top-bar">
+            <div class="nav-left">
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i>Inicio</a></li>
+    
+                    <!-- Menú desplegable equipamiento -->
+                    <li class="dropdown">
+                        <a href="#"><i class="fa-solid fa-database"></i>Equipamiento</a>
+                        <ul class="dropdown-content">
+                            <li><a href="{{ url_for('equipos.equipos_aios') }}"><i class="fas fa-desktop"></i>Equipos Aios</a></li>
+                            <li><a href="{{ url_for('notebooks.notebooks') }}"><i class="fas fa-laptop"></i>Notebooks</a></li>
+                            <li><a href="{{ url_for('impresoras.impresoras') }}"><i class="fas fa-print"></i>Impresoras</a></li>
+                            <li><a href="{{ url_for('hardware.hardware') }}"><i class="fas fa-server"></i>Otros Equipos</a></li>
+                        </ul>
+                    </li>
+    
+                    <!-- Menú desplegable Reclamos -->
+                    {% if current_user.role in ['basico', 'admin'] %}
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-exclamation-circle"></i>Reclamos</a>
+                        <ul class="dropdown-content">
+                            <li><a href="{{ url_for('reclamos_b.reclamos_b') }}"><i class="fas fa-desktop"></i>Reclamos Bangho</a></li>
+                            <li><a href="{{ url_for('reclamos_e.reclamos_e') }}"><i class="fas fa-print"></i>Reclamos External</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+    
+                    {% if current_user.role in ['basico', 'admin'] %}
+                    <li><a href="{{ url_for('remitos.remitos') }}"><i class="fas fa-file"></i>Remitos</a></li>
+                    <li><a href="{{ url_for('calendario') }}"><i class="fas fa-calendar"></i>Calendario</a></li>
+                    <li><a href="{{ url_for('proveedores.proveedores') }}"><i class="fas fa-shipping-fast"></i>Proveedores</a></li>
+                    <li><a href="{{ url_for('documentacion.documentacion') }}"><i class="fas fa-book-open"></i>Documentación</a></li>
+                    {% endif %}
+                    <!-- Menú desplegable links -->
+                    {% if current_user.role in ['basico', 'admin'] %}
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-external-link-alt"></i>Links</a>
+                        <ul class="dropdown-content">
+                            <li><a href="https://nube.enacom.gob.ar/apps/files/files/1750219?dir=/&openfile=true" target="_blank"><i class="fa-solid fa-file-excel"></i>Delegados Autorizantes</a></li>
+                            <li class="dropdown">
+                                <a href="#"><i class="fas fa-external-link-alt"></i>Links Sistemas</a>
+                                <ul class="dropdown-content">
+                                    <li><a href="https://sistemas.enacom.gob.ar" target="_blank"><i class="fas fa-desktop"></i>GLPI</a></li>
+                                    <li><a href="http://cnc-ocs/ocsreports/index.php" target="_blank"><i class="fas fa-desktop"></i>OCS Inventory</a></li>
+                                    <li><a href="https://followme.enacom.gob.ar/admin" target="_blank"><i class="fas fa-print"></i>PaperCut Admin</a></li>
+                                    <li><a href="http://portatilesasti/index.php" target="_blank"><i class="fas fa-laptop"></i>Portatiles Asti</a></li>
+                                    <li><a href="http://movilesasti/index.php" target="_blank"><i class="fas fa-mobile"></i>Moviles Asti</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="https://bangho.custhelp.com" target="_blank"><i class="fas fa-desktop"></i>Incidente Bangho</a></li>
+                            <li class="dropdown">
+                                <a href="#"><i class="fas fa-print"></i>Pedidos External</a>
+                                <ul class="dropdown-content">
+                                    <li><a href="https://external-market.com.ar/pedidodeinsumos/" target="_blank"><i class="fas fa-print"></i>Pedido insumos</a></li>
+                                    <li><a href="https://external-market.com.ar/pedido-de-reparacion" target="_blank"><i class="fas fa-print"></i>Pedido reparación</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+    
+            <!-- Opciones alineadas a la derecha -->
+            <div class="nav-right">
+                <ul class="nav-links">
+                    {% if current_user.is_admin %}
+                    <!-- Menú desplegable usuario admin -->
+                    <li class="dropdown"><a href="#"><i class="fas fa-user"></i>{{ session['username'] if 'username' in session else 'Perfil' }}</a>
+                        <ul class="dropdown-content"><li><a href="{{ url_for('tickets') }}"><i class="fa-solid fa-g"></i>Datos Tickets</a></li><li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-users"></i>Administrar Usuarios</a></li><li><a href="{{ url_for('cambiar_contrasena') }}"><i class="fa-solid fa-key"></i>Cambiar contraseña</a></li><li><a href="{{ url_for('logs') }}"><i class="fa fa-history"></i>Logs</a></li></ul>
+                    </li>
+                    <li><a href="{{ url_for('salir') }}"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+                    {% else %}
+                    <li class="dropdown"><a href="#"><i class="fas fa-user"></i>{{ session['username'] if 'username' in
+                            session else '' }}</a>
+                        <ul class="dropdown-content">
+                            <li><a href="{{ url_for('cambiar_contrasena') }}"><i class="fa-solid fa-key"></i>Cambiar contraseña</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('salir') }}"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="content">
+            <h1>{{ 'Blanquear Contraseña' if current_user.is_authenticated and current_user.is_admin else 'Cambiar Contraseña' }}</h1>
+            {{ form.hidden_tag() }}
+
+            {% if current_user.is_admin %}
+            <p>Aca se puede blanquear la clave de cualquier usuario del sistema.</p>
+            <p>NOTA: Si desea modificar su clave, deje en blanco el casillero de usuario.</p>
+            <p>{{ form.username.label }}<br>{{ form.username(size=32) }}</p>
+            {% endif %}
+
+            {% if current_user.is_authenticated %}
+            <p>{{ form.old_password.label }}<br>{{ form.old_password(size=32) }}</p>
+            <p>{{ form.new_password.label }}<br>{{ form.new_password(size=32) }}</p>
+            <p>{{ form.confirm_password.label }}<br>{{ form.confirm_password(size=32) }}</p>
+            {% endif %}
+            <p><button type="submit" class="btn-submit">{{ 'Restablecer contraseña' if current_user.is_authenticated and current_user.is_admin else 'Cambiar contraseña'}}</button></p>
+
+        </div>
+    </form>
+    <!-- Barra inferior con logo -->
+    <div class="bottom-bar">
+        <text>@lnmunioz</text>
+        <img src="{{ url_for('static', filename='logo-enacom-nuevo.png') }}" alt="Logo Inferior">
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

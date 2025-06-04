@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Proveedor</title>
+</head>
+
+<body>
+    <h1>Editar Proveedor</h1>
+    <form class="form-alineado" action="/actualizar_proveedor/{{ proveedor.id }}" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" value="{{ proveedor.nombre }}" required>
+        <label for="telefono">Telefono:</label>
+        <input type="text" id="telefono" name="telefono" value="{{ proveedor.telefono }}" required>
+        <label for="celular">Celular:</label>
+        <input type="text" id="celular" name="celular" value="{{ proveedor.celular }}" required>
+        <label for="pagina">Web:</label>
+        <input type="text" name="pagina" value="{{ proveedor.pagina }}" required>
+        <label for="observacion">Observacion:</label>
+        <input type="text" name="observacion" value="{{ proveedor.observacion }}">
+        <label for="direccion">Direccion:</label>
+        <input type="text" name="direccion" value="{{ proveedor.direccion }}">
+        <label for="latitud">Latitud:</label>
+        <input type="text" name="latitud" value="{{ proveedor.latitud }}">
+        <label for="longitud">Longitud:</label>
+        <input type="text" name="longitud" value="{{ proveedor.longitud }}">
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Agregar Reclamo External</title>
+</head>
+
+<body>
+    <h1>Agregar Reclamo</h1>
+    <!-- Formulario para agregar un impresora -->
+    <form class="form-alineado" action="/agregar_reclamo_e" method="post">
+        <div>
+            <label for="numero_serie">N° de Serie:</label>
+            <input type="text" name="numero_serie" placeholder="N° de Serie" required>
+            <label for="asunto">Asunto:</label>
+            <select name="asunto" required>
+                <option value="">Seleccione una opcion</option>
+                <option value="pedido_toner">Pedido de Toner</option>
+                <option value="pedido_garantia">Pedido de Garantia</option>
+            </select>
+            <label for="numero_referencia">N° de Referencia:</label>
+            <input type="text" name="numero_referencia" placeholder="(opcional)">
+            <label for="estado">Estado:</label>
+            <select name="estado" required>
+                <option value="">Seleccione una opcion</option>
+                <option value="resuelto">resuelto</option>
+                <option value="en espera">en espera</option>
+                <option value="sin responder">sin responder</option>
+            </select>
+            <label for="fecha">Fecha:</label>
+            <input type="date" name="fecha">
+            <label for="edificio">Edificio:</label>
+            <select name="edificio" id="edificio" onchange="actualizarPisos()">
+                <option value="">Seleccione un edificio</option>
+                <option value="Peru">Peru</option>
+                <option value="Lima">Lima</option>
+                <option value="CAU">CAU</option>
+                <option value="ISER">ISER</option>
+                <option value="CCTE">CCTE</option>
+                <option value="Deposito Mataderos">Deposito Mataderos</option>
+                <option value="Deposito Saldias">Deposito Saldias</option>
+            </select>
+            <label for="piso">Piso:</label>
+            <select name="piso" id="piso">
+                <option value="">Seleccione un piso</option>
+            </select>
+            <label for="descripcion">Descripcion</label>
+            <input type="text" name="descripcion" placeholder="(opcional)">
+            <label for="tarea_realizada">Tarea Realizada</label>
+            <input type="text" name="tarea_realizada" placeholder="(opcional)">
+            <label for="contador">Contador</label>
+            <input type="text" name="contador" placeholder="Contador" required>
+
+            <button type="submit">Agregar Reclamo</button>
+        </div>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

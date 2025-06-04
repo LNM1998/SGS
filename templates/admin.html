@@ -1,0 +1,140 @@
+{% extends "index.html" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+
+<body>
+    <h1>Panel de Administración</h1>
+
+    {% if mensaje %}
+        <script>
+            Swal.fire({
+                icon: 'info',
+                title: '{{ mensaje }}',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        </script>
+    {% endif %}
+
+    <div class="filtros-container">
+        <a href="{{ url_for('registrar') }}" class="exportar-btn">Registrar Nuevo Usuario</a>
+    </div>
+    <table id="tabla-gestion-usuarios" class="display" border="2">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Es Administrador</th>
+                <th>Esta Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{% if user.is_admin %} Sí
+                    {% else %} No
+                    {% endif %}
+                </td>
+                <td>{% if user.is_active %} Sí
+                    {% else %} No
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.id != current_user.id %} <!-- Evitar que se elimine su propio admin -->
+                    <form id="form-{{ user.id }}" class="user-action-form" data-username="{{ user.username }}" method="POST" action="{{ url_for('admin_dashboard') }}">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        
+                        <select name="new_role" class="form-select" onchange="confirmRoleChange(this)" data-username="{{ user.username }}" data-prev-value="{{ user.role }}">
+                            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
+                            <option value="basico" {% if user.role == 'basico' %}selected{% endif %}>Usuario Básico</option>
+                            <option value="lectura" {% if user.role == 'lectura' %}selected{% endif %}>Solo Lectura</option>
+                        </select>
+                        
+                        {% if user.is_active %}
+                        <button type="button" onclick="handleUserAction('deactivate', {{ user.id }}, '{{ user.username }}')" style="background-color: red; color: white;">Desactivar Usuario</button>
+                        {% else %}
+                        <button type="button" onclick="handleUserAction('activate', {{ user.id }}, '{{ user.username }}')">Activar Usuario</button>
+                        {% endif %}
+
+                        <button type="button" onclick="handleUserAction('delete', {{ user.id }}, '{{ user.username }}')" style="background-color: red; color: white;">Eliminar</button>
+                    </form>
+                    {% else %}
+                        <span style="color: gray;">No puedes modificar tu propio rol</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Código JavaScript ejecutándose después de que el DOM esté cargado");  // Verificar en la consola
+        });
+
+        // Función para manejar las acciones del usuario
+        function handleUserAction(action, userId, username) {
+            console.log("Acción:", action, "User ID:", userId, "Username:", username);  // Verificar en la consola
+
+            let title, text, icon;
+
+            switch (action) {
+                case 'deactivate':
+                    title = '¿Desactivar usuario?';
+                    text = `¿Estás seguro de desactivar a ${username}?`;
+                    icon = 'warning';
+                    break;
+                case 'activate':
+                    title = '¿Activar usuario?';
+                    text = `¿Estás seguro de activar a ${username}?`;
+                    icon = 'question';
+                    break;
+                case 'delete':
+                    title = '¿Eliminar usuario?';
+                    text = `¿Estás seguro de eliminar a ${username}?`;
+                    icon = 'error';
+                    break;
+                default:
+                    console.error("Acción no reconocida:", action);
+                    return; // Salir si la acción no es reconocida
+            }
+
+            console.log("Mostrando SweetAlert2");  // Verificar en la consola
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, continuar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                console.log("Resultado de SweetAlert2:", result);  // Verificar en la consola
+                if (result.isConfirmed) {
+                    console.log("Usuario confirmó la acción");  // Verificar en la consola
+                    submitForm(action, userId); // Enviar el formulario si el usuario confirma
+                } else {
+                    console.log("Usuario canceló la acción");  // Verificar en la consola
+                }
+            });
+        }
+
+        // Función para enviar el formulario manualmente
+        function submitForm(action, userId) {
+            const form = document.getElementById(`form-${userId}`); // Obtener el formulario por su ID
+            const actionInput = document.createElement('input'); // Crear un input oculto para la acción
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = action;
+
+            form.appendChild(actionInput); // Agregar el input al formulario
+            form.submit(); // Enviar el formulario
+        }
+    </script>
+</body>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+
+{% block title %}Remitos{% endblock %}
+
+{% block content %}
+<h1>Listado de Remitos</h1>
+<div class="filtros-container">
+    <button id="btn-agregar" onclick="abrirVentana('{{ url_for('remitos.nuevo_remito') }}')">
+        <i class="fas fa-plus"></i>
+        <span>AGREGAR</span>
+    </button>
+    <button id="btn-agregar" onclick="window.location.href='{{ url_for('remitos.descargar', id=0) }}'">
+        <i class="fas fa-file-download"></i>
+        <span>REMITO EN BLANCO</span>
+    </button>
+</div>
+<table id="tabla-remitos" class="display" border="2">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Destinatario</th>
+            <th>Fecha</th>
+            <th>Artículos</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for remito in remitos %}
+        <tr>
+            <td class="
+                {% if remito.estado == 'pendiente' %}estado-en-espera
+                {% elif remito.estado == 'devuelto' %}estado-resuelto
+                {% elif remito.estado == 'entrega definitiva' %}estado-entrega-definitiva
+                {% endif %}
+            ">
+                {{ remito.estado }}
+                <i class="
+                    {% if remito.estado == 'pendiente' %}fa fa-spinner
+                    {% elif remito.estado == 'devuelto' %}fa fa-check
+                    {% elif remito.estado == 'entrega definitiva' %}fa fa-check
+                    {% endif %}
+                "></i>
+            </td>
+            <td>{{ remito.destinatario }}</td>
+            <td>{{ remito.fecha.strftime('%d/%m/%Y') if remito.fecha else 'Sin fecha' }}</td>
+            <td>
+                <ul>
+                    {% for articulo in remito.articulos %}
+                    <li>{{ articulo.cantidad }} x {{ articulo.descripcion }} (N° Serie: {{ articulo.numero_serie }})</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>
+                <form action="{{ url_for('remitos.descargar', id=remito.id) }}" method="get" style="display:inline;">
+                    <button type="submit">Descargar Remito</button>
+                </form>
+                <form id="eliminarForm{{ remito.id }}" action="/eliminar_remito/{{ remito.id }}" method="post"
+                    style="display:inline;">
+                    <button type="button" class="eliminar" onclick="confirmarEliminacion({{ remito.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                </form>
+                <button type="button" onclick="abrirVentana('{{ url_for('remitos.editar_remito', id=remito.id) }}')"><i class="fas fa-edit"></i> Editar</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="estado-leyenda">
+    <span class="estado estado-resuelto"></span> <span>Devuelto</span>
+    <span class="estado estado-en-espera"></span> <span>Pendiente</span>
+    <span class="estado estado-entrega-definitiva"></span> <span>Entrega Definitiva</span>
+</div> 
+{% endblock %}

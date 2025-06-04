@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Nuevo Remito</title>
+</head>
+
+<body>
+    <h1>Nuevo Remito</h1>
+    <form class="form-alineado" action="/nuevo_remito" method="post" onsubmit="return validarFormulario()">
+        <label>Remitente:</label>
+        <input type="text" name="remitente" required>
+
+        <label>Destinatario:</label>
+        <input type="text" name="destinatario" required>
+
+        <label>Fecha:</label>
+        <input type="date" name="fecha" required>
+
+        <h3>Artículos</h3>
+        <div id="articulos-container">
+            <div class="articulo">
+                <label>Cantidad:</label>
+                <input type="number" name="cantidad[]" placeholder="Cantidad" required>
+
+                <label>Número de Serie:</label>
+                <input type="text" name="numero_serie[]" placeholder="Número de Serie" required>
+
+                <label>Descripción:</label>
+                <input type="text" name="descripcion[]" placeholder="Descripción" required>
+
+                <label>Observación:</label>
+                <input type="text" name="observacion[]" placeholder="Observación">
+            </div>
+        </div>
+
+        <button type="button" onclick="agregarArticulo()">Agregar otro artículo</button>
+        <button type="submit">Generar Remito</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+{% extends "index.html" %}
+
+{% block title %}Equipos Aios{% endblock %}
+
+{% block content %}
+<h1>Equipos Registrados</h1>
+<!-- Formulario de búsqueda -->
+{% if current_user.role in ['basico', 'admin'] %}
+<button id="btn-agregar" onclick="abrirVentana('{{ url_for('equipos.agregar_equipo') }}')">    
+    <i class="fas fa-plus"></i>
+    <span>AGREGAR</span>
+</button>
+{% endif %}
+<form action="/equipos_aios" method="get">
+    <div class="filtros-container">
+        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
+            <option value="">Filtro de Busqueda</option>
+            <option value="edificio" {% if filtro=='edificio' %}selected{% endif %}>Edificio</option>
+            <option value="maquina_actual" {% if filtro=='maquina_actual' %}selected{% endif %}>Máquina Actual</option>
+            <option value="numero_serie" {% if filtro=='numero_serie' %}selected{% endif %}>Numero de Serie</option>
+            <option value="version_windows" {% if filtro=='version_windows' %}selected{% endif %}>Versión de Imagen</option>
+            <option value="usuario" {% if filtro=='usuario' %}selected{% endif %}>Usuario</option>
+            <option value="descripcion" {% if filtro=='descripcion' %}selected{% endif %}>Descripcion</option>
+        </select>
+    
+        <!-- Campo de texto (por defecto) -->
+        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor">
+    
+        <!-- Filtro de edificio (si aplica) -->
+        <select id="filtro_edificio" name="edificio" style="display: none;" onclick="actualizarPisosFiltro()">
+            <option value="">Todos los edificios</option>
+            <option value="Peru" {% if filtro_edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if filtro_edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if filtro_edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if filtro_edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if filtro_edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if filtro_edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if filtro_edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if filtro_edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+    
+        <!-- Lista desplegable para Piso (oculta por defecto) -->
+        <select id="filtro_piso" name="piso" style="display: none;">
+            <option value="">Seleccione un piso</option>
+        </select>
+        
+        <div id="segundo-filtro-container" style="display: none;"></div>
+        
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        <button type="button" onclick="agregarSegundoFiltro()"><i class="fas fa-plus"></i> Agregar filtro</button>
+        <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
+        {% if current_user.role in ['basico', 'admin'] %}
+        <a href="{{ url_for('exportar_excel', tipo='equipos_aios', filtro=filtro, valor=valor, edificio=filtro_edificio, piso=filtro_piso, version_windows=filtro_version) }}"
+            class="exportar-btn">
+            <i class="fas fa-file-excel"></i> Exportar Listado
+        </a>
+        {% endif %}
+    </div>
+</form>
+
+<!-- tabla de equipos registrados -->
+<table id="tabla-equipos" class="display" border="1">
+    <thead>
+        <tr>
+            <th>Edificio</th>
+            <th>Piso</th>
+            <th>Máquina Actual</th>
+            <th>Número de Serie</th>
+            {% if current_user.role in ['basico', 'admin'] %}<th>Versión Imagen</th>{% endif %}
+            <th>Usuario</th>
+            <th>Fecha Actualización</th>
+            <th>Máquina Anterior</th>
+            {% if current_user.role in ['basico', 'admin'] %}<th>Acciones</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipo in equipos %}
+        <tr class="fila" data-estado="{{ equipo.descripcion }}">
+            <td>{{ equipo.edificio }}</td>
+            <td>{{ equipo.piso }}</td>
+            <td>{{ equipo.maquina_actual }}</td>
+            <td>{{ equipo.numero_serie }}</td>
+            {% if current_user.role in ['basico', 'admin'] %}<td>{{ equipo.version_windows }}</td>{% endif %}
+            <!-- agregar nombre completo en titulo usuario -->
+            <td class="tooltip" data-tooltip="{{ equipo.nombre_usuario }}">{{ equipo.usuario }}</td>
+            <td>{% if equipo.fecha_actualizacion %}
+                    {{ equipo.fecha_actualizacion.strftime('%d/%m/%Y') }}
+                {% elif equipo.fecha_actualizacion is none %}
+                    {{ '-' }}
+                {% else %}
+                    {{ '-' }}
+                {% endif %}
+            </td> 
+            <!-- agregar campo descripcion para especificar baja o actualizacion -->
+            <td>{{ equipo.maquina_anterior if equipo.maquina_anterior else '-' }}</td>
+            {% if current_user.role in ['basico', 'admin'] %}
+            <td>
+                <form id="eliminarForm{{ equipo.id }}" action="/eliminar_equipo/{{ equipo.id }}" method="post" style="display:inline;">
+                    <button type="button" class="eliminar" onclick="confirmarEliminacion({{ equipo.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                </form>                
+                <button type="button" onclick="abrirVentana('{{ url_for( 'equipos.editar_equipo', id=equipo.id ) }}')"><i class="fas fa-edit"></i> Editar</button>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="estado-leyenda">
+    <span class="estado actualizada"></span> <span>Actualizada</span>
+    <span class="estado baja"></span> <span>Baja</span>
+    <span class="estado fila-amarilla"></span> <span>Pendiente</span>
+    <span class="estado robada"></span> <span>Robada</span>
+</div>    
+{% endblock %}

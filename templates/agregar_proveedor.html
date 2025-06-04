@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Agregar Proveedor</title>
+</head>
+
+<body>
+    <h1>Agregar Proveedor</h1>
+    <form class="form-alineado" action="/agregar_proveedor" method="post">
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" placeholder="nombre" required>
+            <label for="inventario">Telefono:</label>
+            <input type="text" id="telefono" name="telefono" placeholder="telefono" required>
+            <label for="numero_serie">Celular:</label>
+            <input type="text" id="celular" name="celular" placeholder="celular" required>
+            <label for="pagina">Web:</label>
+            <input type="text" name="pagina" placeholder="web" required>
+            <label for="observacion">Observacion:</label>
+            <input type="text" name="observacion" placeholder="(opcional)">
+            <label for="direccion">Direccion:</label>
+            <input type="text" name="direccion" placeholder="direccion">
+            <label for="latitud">Latitud:</label>
+            <input type="text" name="latitud" placeholder="(opcional)">
+            <label for="longitud">Longitud:</label>
+            <input type="text" name="longitud" placeholder="(opcional)">
+        </div>
+
+        <button type="submit">Agregar Proveedor</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+{% extends "index.html" %}
+
+{% block title %}Reclamos external{% endblock %}
+
+{% block content %}
+<h1>Reclamos External Registrados</h1>
+<button id="btn-agregar" onclick="abrirVentana('{{ url_for('reclamos_e.agregar_reclamo_e') }}')">    
+    <i class="fas fa-plus"></i>
+    <span>AGREGAR</span>
+</button>
+<!-- Formulario de búsqueda -->
+<form action="/reclamos_e" method="get">
+    <div class="filtros-container">
+        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
+            <option value="">Filtro de Busqueda</option>
+            <option value="edificio" {% if filtro=='edificio' %}selected{% endif %}>Edificio</option>
+            <option value="numero_serie" {% if filtro=='numero_serie' %}selected{% endif %}>Numero de Serie</option>
+            <option value="estado_r" {% if filtro=='estado_r' %}selected{% endif %}>Estado</option>
+            <option value="asunto" {% if filtro=='asunto' %}selected{% endif %}>Asunto</option>
+        </select>
+    
+        <!-- Campo de texto (por defecto) -->
+        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor">
+    
+        <!-- Lista desplegable para Versión de Windows (oculta por defecto) -->
+        <select id="filtro_estado_reclamos" name="estado_r" style="display: none;">
+            <option value="">Todas</option>
+            <option value="resuelto" {% if valor=='resuelto' %}selected{% endif %}>Resuelto</option>
+            <option value="en espera" {% if valor=='en espera' %}selected{% endif %}>En Espera</option>
+            <option value="sin responder" {% if valor=='sin responder' %}selected{% endif %}>Sin Responder</option>
+        </select>
+    
+        <!-- Filtro de edificio (si aplica) -->
+        <select id="filtro_edificio" name="edificio" style="display: none;" onchange="actualizarPisosFiltro()">
+            <option value="">Todos los edificios</option>
+            <option value="Peru" {% if filtro_edificio=='Peru' %}selected{% endif %}>Peru</option>
+            <option value="Lima" {% if filtro_edificio=='Lima' %}selected{% endif %}>Lima</option>
+            <option value="CAU" {% if filtro_edificio=='CAU' %}selected{% endif %}>CAU</option>
+            <option value="ISER" {% if filtro_edificio=='ISER' %}selected{% endif %}>ISER</option>
+            <option value="CCTE" {% if filtro_edificio=='CCTE' %}selected{% endif %}>CCTE</option>
+            <option value="Museo" {% if filtro_edificio=='Museo' %}selected{% endif %}>Museo</option>
+            <option value="Deposito Mataderos" {% if filtro_edificio=='Deposito Mataderos' %}selected{% endif %}>Deposito Mataderos</option>
+            <option value="Deposito Saldias" {% if filtro_edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
+        </select>
+    
+        <!-- Lista desplegable para Piso (oculta por defecto) -->
+        <select id="filtro_piso" name="piso" style="display: none;">
+            <option value="">Seleccione un piso</option>
+        </select>
+    
+        <select id="valor" name="asunto" style="display: none">
+            <option value="">Todos los edificios</option>
+            <option value="pedido_toner" {% if valor=='pedido_toner' %}selected{% endif %}>Pedido de Toner</option>
+            <option value="pedido_garantia" {% if valor=='pedido_garantia' %}selected{% endif %}>Pedido de Garantia</option>
+        </select>
+    
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
+        <a href="{{ url_for('exportar_excel', tipo='reclamos_external', filtro=filtro, valor=valor, estado_r=filtro_estado_reclamos, edificio=filtro_edificio, piso=filtro_piso) }}"
+            class="exportar-btn">
+            <i class="fas fa-file-excel"></i> Exportar Listado
+        </a>
+    </div>
+</form>
+
+<!-- tabla de equipos registrados -->
+<table id="tabla-reclamos-e" class="display" border="2">
+    <thead>
+        <tr>
+            <th>N° Serie</th>
+            <th>Asunto</th>
+            <th>N° Referencia</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Edificio</th>
+            <th>Piso</th>
+            <th>Descripcion</th>
+            <th>Tarea Realizada</th>
+            <th>Contador</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reclamoe in reclamos %}
+        <tr>
+            <td>{{ reclamoe.numero_serie }}</td>
+            <td>{% if reclamoe.asunto == 'pedido_toner' %} Pedido de Toner
+                {% elif reclamoe.asunto == 'pedido_garantia' %} Pedido de Garantia
+                {% endif %}
+            </td>
+            <td>{{ reclamoe.numero_referencia if reclamoe.numero_referencia else '-' }}</td>
+            <td class="
+                {% if reclamoe.estado == 'en espera' %}estado-en-espera
+                {% elif reclamoe.estado == 'resuelto' %}estado-resuelto
+                {% elif reclamoe.estado == 'sin responder' %}estado-cancelado
+                {% endif %}
+            ">
+                {{ reclamoe.estado }}
+                <i class="
+                    {% if reclamoe.estado == 'en espera' %}fa fa-spinner
+                    {% elif reclamoe.estado == 'resuelto' %}fa fa-check
+                    {% elif reclamoe.estado == 'sin responder' %}fa fa-times
+                    {% endif %}
+                "></i>
+            </td>
+            <td>{{ reclamoe.fecha.strftime('%d/%m/%Y') if reclamoe.fecha else '-' }}</td>
+            <td>{{ reclamoe.edificio }}</td>
+            <td>{{ reclamoe.piso }}</td>
+            <td>{{ reclamoe.descripcion if reclamoe.descripcion else '-' }}</td>
+            <td>{{ reclamoe.tarea_realizada if reclamoe.tarea_realizada else '-' }}</td>
+            <td>{{ reclamoe.contador }}</td>
+            <td>
+                <form id="eliminarForm{{ reclamoe.id }}" action="/eliminar_reclamo_e/{{ reclamoe.id }}" method="post" style="display:inline;">
+                    <button type="button" class="eliminar" onclick="confirmarEliminacion({{ reclamoe.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                </form>
+                <button type="button" onclick="abrirVentana('{{ url_for( 'reclamos_e.editar_reclamo_e', id=reclamoe.id ) }}')"><i class="fas fa-edit"></i> Editar</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="estado-leyenda">
+    <span class="estado estado-resuelto"></span> <span>Resuelto</span>
+    <span class="estado estado-en-espera"></span> <span>En espera</span>
+    <span class="estado estado-cancelado"></span> <span>Sin responder</span>
+</div> 
+{% endblock %}

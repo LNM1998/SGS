@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Agregar Reclamo Bangho</title>
+</head>
+
+<body>
+    <h1>Agregar Reclamo</h1>
+    <!-- Formulario para agregar un impresora -->
+    <form class="form-alineado" action="/agregar_reclamo_b" method="post">
+        <div>
+            <label for="numero_serie">N° de Serie:</label>
+            <input type="text" name="numero_serie" placeholder="N° de Serie" required>
+            <label for="asunto">Asunto:</label>
+            <input type="text" name="asunto" placeholder="Asunto" required>
+            <label for="numero_referencia">N° de Referencia:</label>
+            <input type="text" name="numero_referencia" placeholder="N° de Referencia" required>
+            <label for="estado">Estado:</label>
+            <select name="estado" required>
+                <option value="">Estado</option>
+                <option value="resuelto">resuelto</option>
+                <option value="en espera">en espera</option>
+                <option value="sin responder">sin responder</option>
+            </select>
+            <label for="fecha">Fecha:</label>
+            <input type="date" name="fecha">
+            <label for="edificio">Edificio:</label>
+            <select name="edificio" id="edificio" onchange="actualizarPisos()">
+                <option value="">Seleccione un edificio</option>
+                <option value="Peru">Peru</option>
+                <option value="Lima">Lima</option>
+                <option value="CAU">CAU</option>
+                <option value="ISER">ISER</option>
+                <option value="CCTE">CCTE</option>
+                <option value="Museo">Museo</option>
+                <option value="Deposito Mataderos">Deposito Mataderos</option>
+                <option value="Deposito Saldias">Deposito Saldias</option>
+            </select>
+            <label for="piso">Piso:</label>
+            <select name="piso" id="piso">
+                <option value="">Seleccione un piso</option>
+            </select>
+            <label for="descripcion">Descripcion</label>
+            <input type="text" name="descripcion" placeholder="Descripcion">
+            <label for="tarea_realizada">Tarea Realizada</label>
+            <input type="text" name="tarea_realizada" placeholder="Tarea Realizada">
+            <label for="equipo_utilizado">Equipo Utilizado</label>
+            <input type="text" name="equipo_utilizado" placeholder="(opcional)">
+
+            <button type="submit">Agregar Reclamo</button>
+        </div>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

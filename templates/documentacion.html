@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            margin: 0;
+            padding: 40px;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 20%;
+            background-color: #f4f4f4;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        /* Personalizar la barra de desplazamiento (solo en navegadores WebKit como Chrome y Edge) */
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #f4f4f4; /* Color de fondo */
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #888; /* Color de la barra */
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #555; /* Color cuando se pasa el mouse */
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .load-pdf {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .eliminar {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .eliminar:hover {
+            background-color: darkred;
+        }
+
+        .content {
+            width: 80%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between; /* Espacio entre los elementos */
+            align-items: center;
+            padding: 10px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #ccc;
+            gap: 30px; /* Espacio interno entre los elementos */
+        }
+
+        h2#pdf-title {
+            margin: 0;
+            font-size: 1.5em;
+            flex: 1; /* Hace que el título ocupe espacio disponible */
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .toolbar button:hover {
+            background-color: #0056b3;
+        }
+
+        #pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            width: 80%;
+            padding: 5px;
+            font-size: 14px;
+        }
+    </style>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="nav-left">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i>Inicio</a></li>
+
+                <!-- Menú desplegable equipamiento -->
+                <li class="dropdown">
+                    <a href="#"><i class="fa-solid fa-database"></i>Equipamiento</a>
+                    <ul class="dropdown-content">
+                        <li><a href="{{ url_for('equipos.equipos_aios') }}"><i class="fas fa-desktop"></i>Equipos Aios</a></li>
+                        <li><a href="{{ url_for('notebooks.notebooks') }}"><i class="fas fa-laptop"></i>Notebooks</a></li>
+                        <li><a href="{{ url_for('impresoras.impresoras') }}"><i class="fas fa-print"></i>Impresoras</a></li>
+                        <li><a href="{{ url_for('hardware.hardware') }}"><i class="fas fa-server"></i>Otros Equipos</a></li>
+                    </ul>
+                </li>
+
+                <!-- Menú desplegable Reclamos -->
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-exclamation-circle"></i>Reclamos</a>
+                    <ul class="dropdown-content">
+                        <li><a href="{{ url_for('reclamos_b.reclamos_b') }}"><i class="fas fa-desktop"></i>Reclamos Bangho</a></li>
+                        <li><a href="{{ url_for('reclamos_e.reclamos_e') }}"><i class="fas fa-print"></i>Reclamos External</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{ url_for('remitos.remitos') }}"><i class="fas fa-file"></i>Remitos</a></li>
+                <li><a href="{{ url_for('calendario') }}"><i class="fas fa-calendar"></i>Calendario</a></li>
+                <li><a href="{{ url_for('proveedores.proveedores') }}"><i class="fas fa-shipping-fast"></i>Proveedores</a></li>
+                <li><a href="{{ url_for('documentacion.documentacion') }}"><i class="fas fa-book-open"></i>Documentación</a></li>
+                <!-- Menú desplegable links -->
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-external-link-alt"></i>Links</a>
+                    <ul class="dropdown-content">
+                        <li><a href="https://nube.enacom.gob.ar/apps/files/files/1750219?dir=/&openfile=true" target="_blank"><i class="fa-solid fa-file-excel"></i>Delegados Autorizantes</a></li>
+                        <li class="dropdown">
+                            <a href="#"><i class="fas fa-external-link-alt"></i>Links Sistemas</a>
+                            <ul class="dropdown-content">
+                                <li><a href="https://sistemas.enacom.gob.ar" target="_blank"><i class="fas fa-desktop"></i>GLPI</a></li>
+                                <li><a href="http://cnc-ocs/ocsreports/index.php" target="_blank"><i class="fas fa-desktop"></i>OCS Inventory</a></li>
+                                <li><a href="https://followme.enacom.gob.ar/admin" target="_blank"><i class="fas fa-print"></i>PaperCut Admin</a></li>
+                                <li><a href="http://portatilesasti/index.php" target="_blank"><i class="fas fa-laptop"></i>Portatiles Asti</a></li>
+                                <li><a href="http://movilesasti/index.php" target="_blank"><i class="fas fa-mobile"></i>Moviles Asti</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="https://bangho.custhelp.com" target="_blank"><i class="fas fa-desktop"></i>Incidente Bangho</a></li>
+                        <li class="dropdown">
+                            <a href="#"><i class="fas fa-print"></i>Pedidos External</a>
+                            <ul class="dropdown-content">
+                                <li><a href="https://external-market.com.ar/pedidodeinsumos/" target="_blank"><i class="fas fa-print"></i>Pedido insumos</a></li>
+                                <li><a href="https://external-market.com.ar/pedido-de-reparacion" target="_blank"><i class="fas fa-print"></i>Pedido reparación</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Opciones alineadas a la derecha -->
+        <div class="nav-right">
+            <ul class="nav-links">
+                {% if current_user.is_admin %}
+                <!-- Menú desplegable usuario admin -->
+                <li class="dropdown"><a href="#"><i class="fas fa-user"></i>{{ session['username'] if 'username' in session else 'Perfil' }}</a>
+                    <ul class="dropdown-content"><li><a href="{{ url_for('tickets') }}"><i class="fa-solid fa-g"></i>Datos Tickets</a></li><li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-users"></i>Administrar Usuarios</a></li><li><a href="{{ url_for('cambiar_contrasena') }}"><i class="fa-solid fa-key"></i>Cambiar contraseña</a></li><li><a href="{{ url_for('logs') }}"><i class="fa fa-history"></i>Logs</a></li></ul>
+                </li>
+                <li><a href="{{ url_for('salir') }}"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+                {% else %}
+                <li class="dropdown"><a href="#"><i class="fas fa-user"></i>{{ session['username'] if 'username' in
+                        session else '' }}</a>
+                    <ul class="dropdown-content">
+                        <li><a href="{{ url_for('cambiar_contrasena') }}"><i class="fa-solid fa-key"></i>Cambiar contraseña</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{ url_for('salir') }}"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h2>Documentación</h2>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar PDF...">
+        </div>
+        <form id="upload-form" action="{{ url_for('documentacion.upload_file') }}" method="post" enctype="multipart/form-data" style="text-align: left;">
+            <input type="file" name="file" accept="application/pdf"><button type="submit">Subir PDF</button>
+        </form>
+        <ul id="fileList">
+            {% for file in files %}
+            <li class="file-item">
+                <a href="#" onclick="loadPDF('uploads/documentacion/{{ file }}', '{{ file }}')">
+                    {{ file }}
+                </a>
+                <button class="eliminar" onclick="deletePDF('{{ file }}')">Eliminar</button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="content">
+        <div class="toolbar">
+            <h2 id="pdf-title"></h2>
+
+            <div class="zoom-controls">
+                <button onclick="zoomOut()"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                <span id="zoom-level">100%</span>
+                <button onclick="zoomIn()"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            </div>
+
+            <button id="download-btn" style="display: none;" onclick="downloadPDF()">📥 Descargar PDF</button>
+        </div>
+        <div id="pdf-viewer"></div>
+    </div>
+
+    <!-- Barra inferior con logo -->
+    <div class="bottom-bar">
+        <text>@lnmunioz</text>
+        <img src="{{ url_for('static', filename='logo-enacom-nuevo.png') }}" alt="Logo Inferior">
+    </div>
+
+    <!-- PDF.js -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        let currentPDF = null;
+        let currentScale = 1.5; // Escala inicial
+
+        let currentFilename = ''; // Guardar el nombre del archivo actual
+
+        function loadPDF(url, filename) {
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const pdfTitle = document.getElementById('pdf-title');
+            const downloadBtn = document.getElementById('download-btn');
+
+            pdfViewer.innerHTML = '';
+            currentScale = 1.5;
+            currentFilename = filename;
+
+            // Mostrar el título del PDF
+            pdfTitle.innerText = filename;
+
+            // Mostrar el botón de descarga
+            downloadBtn.style.display = 'block';
+            downloadBtn.setAttribute('data-url', url);
+
+            // Cargar el PDF
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                currentPDF = pdf;
+                renderPages();
+            });
+        }
+
+        function renderPages() {
+            const pdfViewer = document.getElementById('pdf-viewer');
+            pdfViewer.innerHTML = '';
+
+            for (let pageNum = 1; pageNum <= currentPDF.numPages; pageNum++) {
+                currentPDF.getPage(pageNum).then(page => {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    const viewport = page.getViewport({ scale: currentScale });
+
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    pdfViewer.appendChild(canvas);
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    });
+                });
+            }
+
+            document.getElementById('zoom-level').innerText = Math.round(currentScale * 100) + '%';
+        }
+
+        function zoomIn() {
+            currentScale += 0.25;
+            renderPages();
+        }
+
+        function zoomOut() {
+            if (currentScale > 0.5) {
+                currentScale -= 0.25;
+                renderPages();
+            }
+        }
+
+        function deletePDF(filename) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: `No podrás revertir esta acción. Se eliminará el archivo: "${filename}"`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/documentacion/delete/${filename}`, { method: 'DELETE' })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire('Eliminado', 'El archivo ha sido eliminado correctamente.', 'success')
+                                    .then(() => {
+                                        window.location.reload(); // Recargar la página después de eliminar
+                                    });
+                            } else {
+                                Swal.fire('Error', 'No se pudo eliminar el archivo.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error', 'Hubo un problema al eliminar el archivo.', 'error');
+                        });
+                }
+            });
+        }
+
+        function downloadPDF() {
+            const downloadBtn = document.getElementById('download-btn');
+            const pdfUrl = downloadBtn.getAttribute('data-url');
+
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = currentFilename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Manejar clics en los enlaces de PDF
+        document.querySelectorAll('.pdf-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pdfUrl = e.target.getAttribute('data-src');
+                loadPDF(pdfUrl);
+            });
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', function (event) {
+            event.preventDefault();  // Evitar el envío tradicional del formulario
+
+            const formData = new FormData(this);
+
+            fetch("{{ url_for('documentacion.upload_file') }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'  // Para identificar solicitudes AJAX
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: data.message,
+                    }).then(() => {
+                        window.location.href = "{{ url_for('documentacion.documentacion') }}";  // Redirigir después de la alerta
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error al subir el archivo.',
+                });
+            });
+        });
+
+        // Función de búsqueda
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const fileList = document.getElementById('fileList').getElementsByTagName('li');
+
+            Array.from(fileList).forEach(li => {
+                const fileName = li.textContent.toLowerCase();
+                li.style.display = fileName.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

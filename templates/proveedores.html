@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+
+{% block title %}Proveedores{% endblock %}
+
+{% block content %}
+<body class="container mt-4">
+    <h1>Proveedores</h1>
+
+    <button id="btn-agregar" onclick="abrirVentana('{{ url_for('proveedores.agregar_proveedor') }}')">    
+        <i class="fas fa-plus"></i>
+        <span>AGREGAR</span>
+    </button>
+
+    <div class="row">
+        {% for proveedor in proveedores %}
+        <div class="col-md-6">
+            <div class="card1">
+                <div class="card1-body">
+                    <h4 class="card-title">{{ proveedor.nombre }}</h4>
+                    <p class="card-text"><strong>📞 Teléfono:</strong> {{ proveedor.telefono }}</p>
+                    <p class="card-text"><strong>📱 Celular:</strong> {{ proveedor.celular }}</p>
+                    <p class="card-text"><strong>🌐 Web:</strong> <a href="{{ proveedor.pagina }}" target="_blank">{{ proveedor.pagina }}</a></p>
+                    <p class="card-text"><strong>📝 Observaciones:</strong> {{ proveedor.observacion }}</p>
+                    
+                    <div id="map{{ loop.index }}" class="map-container"></div>
+                    <p class="card-text"><strong>📍 Dirección:</strong> {{ proveedor.direccion }}</p>
+
+                    <div class="btn-group mt-3">
+                        <button type="button" onclick="abrirVentana('{{ url_for( 'proveedores.editar_proveedor', id=proveedor.id ) }}')" class="btn btn-warning">✏️ Editar</a>
+                        <form id="eliminarForm{{ proveedor.id }}" action="/eliminar_proveedor/{{ proveedor.id }}" method="post">
+                            <button class="btn btn-danger" onclick="confirmarEliminacion({{ proveedor.id }})">🗑️ Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            {% for proveedor in proveedores %}
+                var map{{ loop.index }} = L.map('map{{ loop.index }}').setView([{{ proveedor.latitud }}, {{ proveedor.longitud }}], 20);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map{{ loop.index }});
+
+                L.marker([{{ proveedor.latitud }}, {{ proveedor.longitud }}])
+                    .addTo(map{{ loop.index }})
+                    .bindPopup('<strong>{{ proveedor.nombre }}</strong><br>Dir: {{ proveedor.direccion }}')
+                    .openPopup();
+            {% endfor %}
+        });
+    </script>
+
+</body>
+{% endblock %}
+

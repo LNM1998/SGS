@@ -1,0 +1,101 @@
+{% extends "index.html" %}
+
+{% block title %}Logs{% endblock %}
+
+{% block content %}
+
+<body>
+    <h1>Registros del Sistema</h1>
+
+    <div class="mb-3">
+        <form action="/logs" method="get" class="row g-3">
+            <div class="filtros-container">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar en logs..."
+                        value="{{ search_query }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+                <div class="col-md-2">
+                    <a href="/logs" class="exportar-btn">Limpiar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between">
+            <span>Últimos registros</span>
+            <a href="/descargar-logs" class="exportar-btn">Descargar Logs</a>
+        </div>
+        <div class="card-body">
+            {% if logs %}
+            {% for log in logs %}
+            {% if 'ERROR' in log %}
+            <div class="log-entry log-error">{{ log }}</div>
+            {% elif 'WARN' in log %}
+            <div class="log-entry log-warning">{{ log }}</div>
+            {% else %}
+            <div class="log-entry log-info">{{ log }}</div>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-info">No hay registros disponibles</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Paginación -->
+    <nav>
+        <ul class="pagination">
+            {% set start_page = page - 2 if page - 2 > 2 else 2 %}
+            {% set end_page = page + 2 if page + 2 < total_pages else total_pages - 1 %} <!-- Botón Anterior -->
+                {% if page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="?search={{ search_query }}&page={{ page - 1 }}">Anterior</a>
+                    </li>
+                {% endif %}
+            
+                <!-- Página 1 -->
+                <li class="page-item {% if page == 1 %}active{% endif %}">
+                    <a class="page-link" href="?search={{ search_query }}&page=1">1</a>
+                </li>
+            
+                <!-- "..." si hay salto entre 1 y el bloque -->
+                {% if start_page > 2 %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            
+                <!-- Páginas intermedias -->
+                {% for p in range(start_page, end_page + 1) %}
+                    <li class="page-item {% if page == p %}active{% endif %}">
+                        <a class="page-link" href="?search={{ search_query }}&page={{ p }}">{{ p }}</a>
+                    </li>
+                {% endfor %}
+            
+                <!-- "..." si hay salto entre el bloque y el final -->
+                {% if end_page < total_pages - 1 %} 
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            
+                    <!-- Última página -->
+                {% if total_pages > 1 %}
+                    <li class="page-item {% if page == total_pages %}active{% endif %}">
+                        <a class="page-link" href="?search={{ search_query }}&page={{ total_pages }}">{{ total_pages }}</a>
+                    </li>
+                {% endif %}
+            
+                    <!-- Botón Siguiente -->
+                {% if page < total_pages %} 
+                    <li class="page-item">
+                        <a class="page-link" href="?search={{ search_query }}&page={{ page + 1 }}">Siguiente</a>
+                    </li>
+                {% endif %}
+        </ul>
+    </nav>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+{% endblock %}
