@@ -18,6 +18,13 @@
             <option value="dell i7 diseno" {% if notebook.modelo == "dell i7 diseno" %}selected{% endif %}>Dell Precision 3561 i7</option>
             <option value="exo i5" {% if notebook.modelo == "exo i5" %}selected{% endif %}>Exo Smart Pro Q6 i5</option>
             <option value="exo i7" {% if notebook.modelo == "exo i7" %}selected{% endif %}>Exo Smart Pro Q6 i7</option>
+            <option value="bangho 1528" {% if notebook.modelo == "bangho 1528" %}selected{% endif %}>Bangho BES 1528</option>
+            <option value="bangho 1525" {% if notebook.modelo == "bangho 1525" %}selected{% endif %}>Bangho BES 1525</option>
+            <option value="bangho 1524" {% if notebook.modelo == "bangho 1524" %}selected{% endif %}>Bangho Max 1524</option>
+            <option value="bangho aero" {% if notebook.modelo == "bangho aero" %}selected{% endif %}>Bangho Aero X2</option>
+            <option value="hp 4520" {% if notebook.modelo == "hp 4520" %}selected{% endif %}>HP ProBook 4520</option>
+            <option value="hp 4530" {% if notebook.modelo == "hp 4530" %}selected{% endif %}>HP ProBook 4530</option>
+            <option value="hp 6550" {% if notebook.modelo == "hp 6550" %}selected{% endif %}>HP ProBook 6550</option>
         </select>
         <label for="inventario">N° de Inventario:</label>
         <input type="text" name="inventario" value="{{ notebook.inventario }}" placeholder="N° Inventario" required>

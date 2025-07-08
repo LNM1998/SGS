@@ -70,6 +70,7 @@
             <th>Usuario</th>
             <th>Fecha Actualización</th>
             <th>Máquina Anterior</th>
+            <th>Descripcion</th>
             {% if current_user.role in ['basico', 'admin'] %}<th>Acciones</th>{% endif %}
         </tr>
     </thead>
@@ -93,6 +94,7 @@
             </td> 
             <!-- agregar campo descripcion para especificar baja o actualizacion -->
             <td>{{ equipo.maquina_anterior if equipo.maquina_anterior else '-' }}</td>
+            <td>{{ equipo.descripcion if equipo.descripcion else '-' }}</td>
             {% if current_user.role in ['basico', 'admin'] %}
             <td>
                 <form id="eliminarForm{{ equipo.id }}" action="/eliminar_equipo/{{ equipo.id }}" method="post" style="display:inline;">

@@ -47,6 +47,13 @@
             </option>
             <option value="exo i5" {% if valor=='exo i5' %}selected{% endif %}>Exo Smart Pro Q6 i5</option>
             <option value="exo i7" {% if valor=='exo i7' %}selected{% endif %}>Exo Smart Pro Q6 i7</option>
+            <option value="bangho 1528" {% if valor=='bangho 1528' %}selected{% endif %}>Bangho BES 1528</option>
+            <option value="bangho 1525" {% if valor=='bangho 1525' %}selected{% endif %}>Bangho BES 1525</option>
+            <option value="bangho 1524" {% if valor=='bangho 1524' %}selected{% endif %}>Bangho BES 1524</option>
+            <option value="bangho aero" {% if valor=='bangho aero' %}selected{% endif %}>Bangho Aero X2</option>
+            <option value="hp 4520" {% if valor=='hp 4520' %}selected{% endif %}>HP ProBook 4520</option>
+            <option value="hp 4530" {% if valor=='hp 4530' %}selected{% endif %}>HP ProBook 4530</option>
+            <option value="hp 6550" {% if valor=='hp 6550' %}selected{% endif %}>HP ProBook 6550</option>
         </select>
 
         <select id="filtro_direccion" name="direccion" style="display: none">
@@ -103,6 +110,13 @@
                 {% elif notebook.modelo == 'dell i7 diseno' %} Dell Precision 3561 i7
                 {% elif notebook.modelo == 'exo i5' %} Exo Smart Pro Q6 i5
                 {% elif notebook.modelo == 'exo i7' %} Exo Smart Pro Q6 i7
+                {% elif notebook.modelo == 'bangho 1528' %} Bangho BES 1528
+                {% elif notebook.modelo == 'bangho 1525' %} Bangho BES 1525
+                {% elif notebook.modelo == 'bangho 1524' %} Bangho Max 1524
+                {% elif notebook.modelo == 'bangho aero' %} Bangho Aero X2
+                {% elif notebook.modelo == 'hp 4520' %} HP ProBook 4520
+                {% elif notebook.modelo == 'hp 4530' %} HP ProBook 4530
+                {% elif notebook.modelo == 'hp 6550' %} HP ProBook 6550
                 {% endif %}
             </td>
             <td>{{ notebook.inventario }}</td>
