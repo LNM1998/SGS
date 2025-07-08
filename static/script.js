@@ -23,10 +23,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const equipos = data.Equipos;
             const reclamos = data.Reclamos;
 
-            const labels = ["AIOS", "Notebooks", "Impresoras", "Reclamos Bangho", "Reclamos External"];
+            const labels = ["AIOS", "Notebooks", "Celulares" ,"Impresoras", "Reclamos Bangho", "Reclamos External"];
             const valores = [
                 equipos.AIOS,
                 equipos.Notebooks,
+                equipos.Celulares,
                 equipos.Impresoras,
                 reclamos.Bangho,
                 reclamos.External
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     type: 'pie',
                 },
                 labels: labels,
-                colors: ['#003366', '#004080', '#0059b3', '#336699', '#6699cc'], // Tonos de azul oscuro
+                colors: ['#003366', '#004080', '#0059b3', '#336699', '#6699cc', '#0e274c'], // Tonos de azul oscuro
                 plotOptions: {
                     pie: {
                         dataLabels: {
@@ -95,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const valores = [
                 data.AIOS,
                 data.Notebooks,
+                data.Celulares,
                 data.ReclamosBangho,
                 data.ReclamosExternal
             ];
@@ -130,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 },
                 xaxis: {
-                    categories: ['AIOS', 'Notebooks', 'Reclamos Bangho', 'Reclamos External'],
+                    categories: ['AIOS', 'Notebooks', 'Celulares','Reclamos Bangho', 'Reclamos External'],
                     labels: {
                         style: {
                             fontSize: '14px'
@@ -184,6 +186,7 @@ function cambiarFiltro(sufijo = '') {
         "selectEdificio": document.getElementById("filtro_edificio" + sufijo),
         "selectPiso": document.getElementById("filtro_piso" + sufijo),
         "selectEstadoNotebook": document.getElementById("filtro_estado_notebook" + sufijo),
+        "selectEstadoCelular": document.getElementById("filtro_estado_celular" + sufijo),
         "selectEstadoReclamos": document.getElementById("filtro_estado_reclamos" + sufijo),
         "selectModelo": document.getElementById("filtro_modelo" + sufijo),
         "selectDireccion": document.getElementById("filtro_direccion" + sufijo),
@@ -196,11 +199,11 @@ function cambiarFiltro(sufijo = '') {
 
     // Mostrar el filtro correcto según la selección
     switch (filtro) {
-        // case "version_windows":
-        //     filtros["selectVersion"].style.display = "inline-block";
-        //     break;
         case "estado":
             filtros["selectEstadoNotebook"].style.display = "inline-block";
+            break;
+        case "estado_c":
+            filtros["selectEstadoCelular"].style.display = "inline-block";
             break;
         case "estado_r":
             filtros["selectEstadoReclamos"].style.display = "inline-block";
@@ -439,6 +442,44 @@ $(document).ready(function() {
             "lengthMenu": "Mostrar _MENU_",
             "zeroRecords": "No se encontraron registros",
             "info": "Mostrando _START_ a _END_ de _TOTAL_ notebooks",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrado de _MAX_ registros totales)",
+            "search": "Buscar:",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        },
+        "columnDefs": [
+            {
+                "targets": 6, // Índice de la columna de fecha (comienza desde 0)
+                "type": "date-eu", // Tipo de dato para ordenamiento (reconocerá dd/mm/yyyy)
+                "orderSequence": ["desc", "asc"],
+                "render": function(data, type, row) {
+                    // Mostrar el formato original (dd/mm/yyyy) en la tabla
+                    if (type === 'display') {
+                        return data === '-' ? '-' : data; 
+                    }
+                    // Usar yyyy-mm-dd para ordenamiento interno
+                    if (type === 'sort') {
+                        return data === '-' ? '1900-01-01' : data.split('/').reverse().join('-');
+                    }
+                    return data;
+                }
+            }
+        ],
+    });
+    $('#tabla-celulares').DataTable({
+        "pageLength": 10, // Mostrar 10 registros por página
+        "lengthMenu": [[5, 10, 15, 20, 50, -1], [5, 10, 15, 20, 50, "Todos"]], // Opciones de visualización
+        "ordering": true, // Permite ordenar columnas
+        "searching": false, // Permite buscar
+        "language": {
+            "lengthMenu": "Mostrar _MENU_",
+            "zeroRecords": "No se encontraron registros",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ celulares",
             "infoEmpty": "No hay registros disponibles",
             "infoFiltered": "(filtrado de _MAX_ registros totales)",
             "search": "Buscar:",

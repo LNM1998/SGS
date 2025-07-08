@@ -92,7 +92,7 @@ class ReclamosExternal(db.Model):
 
 class Notebook(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    modelo = db.Column(db.Enum('dell i5', 'dell i7', 'dell i7 diseno', 'exo i5', 'exo i7'), nullable=False)
+    modelo = db.Column(db.Enum('dell i5', 'dell i7', 'dell i7 diseno', 'exo i5', 'exo i7', 'bangho 1525', 'bangho 1524', 'bangho aero', 'hp 4520', 'hp 4530', 'hp 6550', 'bangho 1528'), nullable=False)
     inventario = db.Column(db.String(20), nullable=False)
     numero_serie = db.Column(db.String(20), nullable=False)
     estado = db.Column(db.Enum('fisica', 'asignada', 'no devuelta', 'rota', 'robada', 'perdida'), nullable=False)
@@ -153,3 +153,16 @@ class Proveedor(db.Model):
     latitud = db.Column(db.String(30), nullable=True)
     longitud = db.Column(db.String(30), nullable=True)
     direccion = db.Column(db.String(50), nullable=False)
+
+class Celular(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    modelo = db.Column(db.Enum('samsung style', 'samsung a5', 'samsung S9', 'moto g60s', 'samsung note 8', 'samsung a3', 'samsung grand prime', 'samsung j2', 'moto x', 'samsung a51', 'samsung j1', 'samsung s7', 'moto x play', 'samsung j5'), nullable=False)
+    inventario = db.Column(db.String(20), nullable=False)
+    imei = db.Column(db.String(20), nullable=False)
+    estado = db.Column(db.Enum('fisica', 'asignada', 'no devuelta', 'rota', 'robada', 'perdida'), nullable=False)
+    usuario = db.Column(db.String(20), nullable=False)
+    direccion = db.Column(db.String(50), nullable=False)
+    fecha = db.Column(db.Date, nullable=True)
+    descripcion = db.Column(db.Text, nullable=True)
+    archivo_celular = db.Column(db.String(200), nullable=True)
+    archivo_pdf_c = db.Column(db.String(200), nullable=True)

@@ -3,10 +3,11 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from datetime import date, timedelta
 from werkzeug.security import check_password_hash, generate_password_hash
 from pathlib import Path
-from models import db, init_db, User, Equipo, ReclamosBangho, ReclamosExternal, Notebook, Impresora, Hardware
+from models import db, init_db, User, Equipo, ReclamosBangho, ReclamosExternal, Notebook, Impresora, Hardware, Celular
 from routes.forms import LoginForm, RegisterForm, CambiarRecuperarContraseñaForm, DataRequired
 from routes.equipos import equipo_aios_bp
 from routes.notebooks import notebooks_bp
+from routes.celulares import celulares_bp
 from routes.impresoras import impresoras_bp
 from routes.reclamos_b import reclamos_b_bp
 from routes.reclamos_e import reclamos_e_bp
@@ -28,6 +29,7 @@ logger.init_app(app)
 
 app.register_blueprint(equipo_aios_bp)
 app.register_blueprint(notebooks_bp)
+app.register_blueprint(celulares_bp)
 app.register_blueprint(impresoras_bp)
 app.register_blueprint(reclamos_b_bp)
 app.register_blueprint(reclamos_e_bp)
@@ -146,6 +148,7 @@ def admin_dashboard():
                 valid_roles = ['admin', 'basico', 'lectura']
                 if new_role in valid_roles:
                     user.role = new_role
+                    user.is_admin = (new_role == 'admin')
                     mensaje = f'Rol de {user.username} actualizado a {new_role}'
             if action == 'activate':
                 user.is_active = True
@@ -221,6 +224,7 @@ def modificaciones_semanales():
     data = {
         'AIOS': Equipo.query.filter(Equipo.fecha_actualizacion >= desde).count() or 0,
         'Notebooks': Notebook.query.filter(Notebook.fecha >= desde).count() or 0,
+        'Celulares': Celular.query.filter(Celular.fecha >= desde).count() or 0,
         'ReclamosBangho': ReclamosBangho.query.filter(ReclamosBangho.fecha >= desde).count() or 0,
         'ReclamosExternal': ReclamosExternal.query.filter(ReclamosExternal.fecha >= desde).count() or 0,
     }
@@ -233,6 +237,7 @@ def datos_grafico():
     # Contar registros de cada tabla
     total_aios = Equipo.query.count()
     total_notebooks = Notebook.query.count()
+    total_celulares = Celular.query.count()
     total_impresoras = Impresora.query.count()
     total_reclamos_bangho = ReclamosBangho.query.count()
     total_reclamos_external = ReclamosExternal.query.count()
@@ -242,7 +247,8 @@ def datos_grafico():
         "Equipos": {
             "AIOS": total_aios,
             "Notebooks": total_notebooks,
-            "Impresoras": total_impresoras
+            "Impresoras": total_impresoras,
+            "Celulares": total_celulares
         },
         "Reclamos": {
             "Bangho": total_reclamos_bangho,
@@ -254,8 +260,8 @@ def datos_grafico():
 @app.route('/datos_tickets', methods=['POST'])
 @login_required
 def datos_tickets():
-    fecha_inicio = request.form.get('fecha_inicio') or '2025-04-01'
-    fecha_fin = request.form.get('fecha_fin') or '2025-04-24'
+    fecha_inicio = request.form.get('fecha_inicio')
+    fecha_fin = request.form.get('fecha_fin')
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -270,7 +276,7 @@ def datos_tickets():
           JOIN glpi_users us ON ts.users_id = us.id
         WHERE
           ts.users_id IN (
-            '2187','2189','2178','2560','3161','3163','2186','2169','2982'
+            '2187','2189','2178','2560','3161','3163','2186','2169','2982', '4093'
           )
           AND t.solvedate BETWEEN %s AND %s
         GROUP BY
@@ -351,6 +357,7 @@ def exportar_excel(tipo):
     modelos = {
         "equipos_aios": Equipo,
         "notebooks": Notebook,
+        "celulares": Celular,
         "impresoras": Impresora,
         "reclamos_bangho": ReclamosBangho,
         "reclamos_external": ReclamosExternal,
@@ -365,6 +372,7 @@ def exportar_excel(tipo):
     columnas_permitidas = {
         "equipos_aios": ["edificio", "piso", "maquina_actual", "numero_serie", "version_windows", "usuario", "fecha_actualizacion", "maquina_anterior"],
         "notebooks": ["modelo", "inventario", "numero_serie", "estado", "usuario", "direccion", "fecha", "descripcion"],
+        "celulares": ["modelo", "inventario", "imei", "estado", "usuario", "direccion", "fecha", "descripcion"],
         "impresoras": ["nombre", "numero_serie", "es_alquilada", "edificio", "piso", "servidor", "ip", "descripcion"],
         "reclamos_bangho": ["numero_serie", "asunto", "numero_referencia", "estado", "fecha", "edificio", "piso", "descripcion", "tarea_realizada", "equipo_utilizado"],
         "reclamos_external": ["numero_serie", "asunto", "numero_referencia", "estado", "fecha", "edificio", "piso", "descripcion", "tarea_realizada", "contador"],
@@ -409,6 +417,8 @@ def exportar_excel(tipo):
             consulta = consulta.filter(modelos[tipo].usuario.contains(valor))
         elif filtro == 'numero_serie':
             consulta = consulta.filter(modelos[tipo].numero_serie.contains(valor))
+        elif filtro == 'imei':
+            consulta = consulta.filter(modelos[tipo].imei.contains(valor))
         elif filtro == 'version_windows':
             consulta = consulta.filter(modelos[tipo].version_windows.contains(valor))
         elif filtro == 'asunto':

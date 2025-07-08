@@ -1,0 +1,196 @@
+{% extends "index.html" %}
+
+{% block title %}Celulares{% endblock %}
+
+{% block content %}
+<h1>Celulares Registrados</h1>
+{% if current_user.role in ['basico', 'admin'] %}
+<button id="btn-agregar" onclick="abrirVentana('{{ url_for('celulares.agregar_celular') }}')">
+    <i class="fas fa-plus"></i>
+    <span>AGREGAR</span>
+</button>
+{% endif %}
+<!-- Formulario de búsqueda -->
+<form action="/notebooks" method="get">
+    <div class="filtros-container">
+        <select id="filtro" name="filtro" onchange="cambiarFiltro()">
+            <option value="">Filtro de Busqueda</option>
+            <option value="modelo" {% if filtro=='modelo' %}selected{% endif %}>Modelo</option>
+            <option value="inventario" {% if filtro=='inventario' %}selected{% endif %}>Inventario</option>
+            <option value="imei" {% if filtro=='imei' %}selected{% endif %}>Imei</option>
+            <option value="estado_c" {% if filtro=='estado_c' %}selected{% endif %}>Estado</option>
+            <option value="usuario" {% if filtro=='usuario' %}selected{% endif %}>Usuario</option>
+            <option value="direccion" {% if filtro=='direccion' %}selected{% endif %}>Direccion</option>
+            <option value="descripcion" {% if filtro=='descripcion' %}selected{% endif %}>Descripcion</option>
+        </select>
+
+        <!-- Campo de texto (por defecto) -->
+        <input type="text" id="valor_input" name="valor" value="{{ valor }}" placeholder="Ingrese el valor"
+            style="display: none;">
+
+        <!-- Lista desplegable para Versión de Windows (oculta por defecto) -->
+        <select id="filtro_estado_notebook" name="estado" style="display: none;">
+            <option value="">Todas</option>
+            <option value="fisica" {% if valor=='fisica' %}selected{% endif %}>Fisica</option>
+            <option value="asignada" {% if valor=='asignada' %}selected{% endif %}>Asignada</option>
+            <option value="no devuelta" {% if valor=='no devuelta' %}selected{% endif %}>No Devuelta</option>
+            <option value="rota" {% if valor=='rota' %}selected{% endif %}>Rota</option>
+            <option value="robada" {% if valor=='robada' %}selected{% endif %}>Robada</option>
+            <option value="perdida" {% if valor=='perdida' %}selected{% endif %}>Perdida</option>
+        </select>
+
+        <select id="filtro_modelo" name="modelo" style="display: none">
+            <option value="">Todas</option>
+            <option value="samsung style" {% if valor == "samsung style" %}selected{% endif %}>Samsung Galaxy Style LTE 4G G3</option>
+            <option value="samsung a5" {% if valor == "samsung a5" %}selected{% endif %}>Samsung Galaxy A5</option>
+            <option value="samsung S9" {% if valor == "samsung S9" %}selected{% endif %}>Samsung S9</option>
+            <option value="moto g60s" {% if valor == "moto g60s" %}selected{% endif %}>Moto G60S</option>
+            <option value="samsung note 8" {% if valor == "samsung note 8" %}selected{% endif %}>Samsung Note 8</option>
+            <option value="samsung a3" {% if valor == "samsung a3" %}selected{% endif %}>Samsung Galaxy A3</option>
+            <option value="samsung grand prime" {% if valor == "samsung grand prime" %}selected{% endif %}>Samsung Galaxy Grand Prime 4G</option>
+            <option value="samsung j2" {% if valor == "samsung j2" %}selected{% endif %}>Samsung Galaxy J2 Prime</option>
+            <option value="moto x" {% if valor == "moto x" %}selected{% endif %}>Moto X 2da Gen 4G LTE</option>
+            <option value="samsung a51" {% if valor == "samsung a51" %}selected{% endif %}>Samsung A51</option>
+            <option value="samsung j1" {% if valor == "samsung j1" %}selected{% endif %}>Samsung Galaxy J1 Ace</option>
+            <option value="samsung s7" {% if valor == "samsung s7" %}selected{% endif %}>Samsung Galaxy S7 Edge</option>
+            <option value="moto x play" {% if valor == "moto x play" %}selected{% endif %}>Moto X Play</option>
+            <option value="samsung j5" {% if valor == "samsung j5" %}selected{% endif %}>Samsung J5 Prime</option>
+            <option value="solo linea" {% if valor == "solo linea" %}selected{% endif %}>Solo Linea</option>
+        </select>
+
+        <select id="filtro_direccion" name="direccion" style="display: none">
+            <option value="">Direccion</option>
+            <option value="intervencion" {% if valor=='intervencion' %}selected{% endif %}>Intervencion</option>
+            <option value="sistemas" {% if valor=='sistemas' %}selected{% endif %}>Dirección General de Sistemas Informaticos</option>
+            <option value="fomento" {% if valor=='fomento' %}selected{% endif %}>Dirección Nacional de Fomento y Desarrollo</option>
+            <option value="administracion" {% if valor=='administracion' %}selected{% endif %}>Dirección General de Administración</option>
+            <option value="rrhh" {% if valor=='rrhh' %}selected{% endif %}>Dirección General de Recursos Humanos</option>
+            <option value="juridicos" {% if valor=='juridicos' %}selected{% endif %}>Dirección General de Asuntos Juridicos y Regulatorios</option>
+            <option value="planificacion" {% if valor=='planificacion' %}selected{% endif %}>Dirección Nacional de Planificación y Convergencia</option>
+            <option value="control" {% if valor=='control' %}selected{% endif %}>Dirección Nacional de Control y Fiscalizacion</option>
+            <option value="postales" {% if valor=='postales' %}selected{% endif %}>Dirección Nacional de Servicios Postales</option>
+            <option value="institucionales" {% if valor=='institucionales' %}selected{% endif %}>Dirección General de Asuntos Institucionales</option>
+            <option value="audiovisuales" {% if valor=='audiovisuales' %}selected{% endif %}>Dirección Nacional de Servicios Audiovisuales</option>
+            <option value="competencia" {% if valor=='competencia' %}selected{% endif %}>Dirección Nacional de Desarrollo de la Competencia en Redes</option>
+            <option value="autorizaciones" {% if valor=='autorizaciones' %}selected{% endif %}>Dirección Nacional de Autorizaciones y Registros TIC</option>
+            <option value="delegaciones" {% if valor=='delegaciones' %}selected{% endif %}>Dirección Nacional de Atencion de Usuarios</option>
+            <option value="auditoria" {% if valor=='auditoria' %}selected{% endif %}>Unidad de Auditoria Interna</option>
+            <option value="ccte" {% if valor=='ccte' %}selected{% endif %}>Centro De Comprobación Técnica De Emisiones</option>
+        </select>
+
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
+        {% if current_user.role in ['basico', 'admin'] %}
+        <a href="{{ url_for('exportar_excel', tipo='celulares', celulares=celulares, filtro=filtro, valor=valor, estado=filtro_estado_celulares, modelo=filtro_modelo, direccion=filtro_direccion) }}"
+            class="exportar-btn">
+            <i class="fas fa-file-excel"></i> Exportar Listado
+        </a>
+        {% endif %}
+    </div>
+</form>
+
+<!-- tabla de notebooks registrados -->
+<table id="tabla-celulares" class="display" border="1">
+    <thead>
+        <tr>
+            <th>Modelo</th>
+            <th>N° Inventario</th>
+            <th>N° Imei</th>
+            <th>Estado</th>
+            <th>Usuario</th>
+            <th>Direccion</th>
+            <th>Fecha</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for celular in celulares %}
+        <tr class="fila" data-estado="{{ celular.estado }}">
+            <td>{% if celular.modelo == 'samsung style' %} Samsung Galaxy Style LTE 4G G3
+                {% elif celular.modelo == 'samsung a5' %} Samsung Galaxy A5
+                {% elif celular.modelo == 'samsung S9' %} Samsung S9
+                {% elif celular.modelo == 'moto g60s' %} Moto G60S
+                {% elif celular.modelo == 'samsung note 8' %} Samsung Note 8
+                {% elif celular.modelo == 'samsung a3' %} Samsung Galaxy A3
+                {% elif celular.modelo == 'samsung grand prime' %} Samsung Galaxy Grand Prime 4G
+                {% elif celular.modelo == 'samsung j2' %} Samsung Galaxy J2 Prime
+                {% elif celular.modelo == 'moto x' %} Moto X 2da Gen 4G LTE
+                {% elif celular.modelo == 'samsung a51' %} Samsung A51
+                {% elif celular.modelo == 'samsung j1' %} Samsung Galaxy J1 Ace
+                {% elif celular.modelo == 'samsung s7' %} Samsung Galaxy S7 Edge
+                {% elif celular.modelo == 'moto x play' %} Moto X Play
+                {% elif celular.modelo == 'samsung j5' %} Samsung J5 Prime
+                {% endif %}
+            </td>
+            <td>{{ celular.inventario }}</td>
+            <td>{{ celular.imei }}</td>
+            <td>{{ celular.estado }}</td>
+            <td>{{ celular.usuario }}</td>
+            <td>{% if celular.direccion == 'intervencion' %} Intervención
+                {% elif celular.direccion == 'sistemas' %} Dirección General de Sistemas Informaticos
+                {% elif celular.direccion == 'fomento' %} Dirección Nacional de Fomento y Desarrollo
+                {% elif celular.direccion == 'administracion' %} Dirección General de Administración
+                {% elif celular.direccion == 'rrhh' %} Dirección General de Recursos Humanos
+                {% elif celular.direccion == 'juridicos' %} Dirección General de Asuntos Juridicos y Regulatorios
+                {% elif celular.direccion == 'planificacion' %} Dirección Nacional de Planificación y Convergencia
+                {% elif celular.direccion == 'control' %} Dirección Nacional de Control y Fiscalizacion
+                {% elif celular.direccion == 'postales' %} Dirección Nacional de Servicios Postales
+                {% elif celular.direccion == 'institucionales' %} Dirección General de Asuntos Institucionales
+                {% elif celular.direccion == 'audiovisuales' %} Dirección Nacional de Servicios Audiovisuales
+                {% elif celular.direccion == 'competencia' %} Dirección Nacional de Desarrollo de la Competencia en Redes
+                {% elif celular.direccion == 'autorizaciones' %} Dirección Nacional de Autorizaciones y Registros TIC
+                {% elif celular.direccion == 'delegaciones' %} Dirección Nacional de Atencion de Usuarios
+                {% elif celular.direccion == 'auditoria' %} Unidad de Auditoria Interna
+                {% elif celular.direccion == 'ccte' %} Centro De Comprobación Técnica De Emisiones
+                {% endif %}
+            </td>
+            <td>{{ celular.fecha.strftime('%d/%m/%Y') if celular.fecha else '-' }}</td>
+            <td>{{ celular.descripcion if celular.descripcion else '-' }}</td>
+            <td>
+                <div class="dropdown-notebook">
+                    <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Opciones
+                    </button>
+                    <ul class="dropdown-content-notebook">
+                        <!-- Descargar Remito -->
+                        {% if current_user.role in ['basico', 'admin'] %}
+                        <li>
+                            <button type="button" onclick="abrirVentana('{{ url_for('celulares.descargar_acta_celular', id=celular.id) }}')"><i class="fas fa-download"></i> Descargar Acta</button>                            
+                        </li>
+                        {% endif %}
+                        <!-- Subir Acta -->
+                        <li>
+                            <button type="button" onclick="abrirVentana('{{ url_for('celulares.ver_acta_celular', id=celular.id) }}')"><i class="fas fa-file-pdf"></i> Ver acta</button>
+                        </li>
+                        <!-- Editar -->
+                        {% if current_user.role in ['basico', 'admin'] %}
+                        <li>
+                            <button type="button" onclick="abrirVentana('{{ url_for( 'celulares.editar_celular', id=celular.id ) }}')"><i class="fas fa-edit"></i> Editar</button>
+                        </li>
+                        {% endif %}
+                        <!-- Eliminar -->
+                        {% if current_user.role in ['basico', 'admin'] %}
+                        <li>
+                            <form id="eliminarForm{{ celular.id }}" action="/eliminar_celular/{{ celular.id }}" method="post" style="display:inline;">
+                                <button type="button" class="eliminar" onclick="confirmarEliminacion({{ celular.id }})"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                            </form>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="estado-leyenda">
+    <span class="estado actualizada"></span> <span>Fisica</span>
+    <span class="estado baja"></span> <span>No devuelta</span>
+    <span class="estado rota"></span> <span>Rota</span>
+    <span class="estado perdida"></span> <span>Perdida</span>
+    <span class="estado robada"></span> <span>Robada</span>
+</div> 
+
+{% endblock %}

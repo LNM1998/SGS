@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Editar Celular</title>
+</head>
+
+<body>
+    <h1>Editar Celular</h1>
+    <form class="form-alineado" action="/actualizar_celular/{{ celular.id }}" method="post">
+        <label for="modelo">Modelo:</label>
+        <select name="modelo" required>
+            <option value="samsung style" {% if celular.modelo == "samsung style" %}selected{% endif %}>Samsung Galaxy Style LTE 4G G3</option>
+            <option value="samsung a5" {% if celular.modelo == "samsung a5" %}selected{% endif %}>Samsung Galaxy A5</option>
+            <option value="samsung S9" {% if celular.modelo == "samsung S9" %}selected{% endif %}>Samsung S9</option>
+            <option value="moto g60s" {% if celular.modelo == "moto g60s" %}selected{% endif %}>Moto G60S</option>
+            <option value="samsung note 8" {% if celular.modelo == "samsung note 8" %}selected{% endif %}>Samsung Note 8</option>
+            <option value="samsung a3" {% if celular.modelo == "samsung a3" %}selected{% endif %}>Samsung Galaxy A3</option>
+            <option value="samsung grand prime" {% if celular.modelo == "samsung grand prime" %}selected{% endif %}>Samsung Galaxy Grand Prime 4G</option>
+            <option value="samsung j2" {% if celular.modelo == "samsung j2" %}selected{% endif %}>Samsung Galaxy J2 Prime</option>
+            <option value="moto x" {% if celular.modelo == "moto x" %}selected{% endif %}>Moto X 2da Gen 4G LTE</option>
+            <option value="samsung a51" {% if celular.modelo == "samsung a51" %}selected{% endif %}>Samsung A51</option>
+            <option value="samsung j1" {% if celular.modelo == "samsung j1" %}selected{% endif %}>Samsung Galaxy J1 Ace</option>
+            <option value="samsung s7" {% if celular.modelo == "samsung s7" %}selected{% endif %}>Samsung Galaxy S7 Edge</option>
+            <option value="moto x play" {% if celular.modelo == "moto x play" %}selected{% endif %}>Moto X Play</option>
+            <option value="samsung j5" {% if celular.modelo == "samsung j5" %}selected{% endif %}>Samsung J5 Prime</option>
+            <option value="solo linea" {% if celular.modelo == "solo linea" %}selected{% endif %}>Solo Linea</option>
+        </select>
+        <label for="inventario">N° de Inventario:</label>
+        <input type="text" name="inventario" value="{{ celular.inventario }}" placeholder="N° Inventario" required>
+        <label for="imei">N° de Imei:</label>
+        <input type="text" name="imei" value="{{ celular.imei }}" placeholder="N° de Imei" required>
+        <label for="estado">Estado:</label>
+        <select name="estado" required>
+            <option value="">Estado</option>
+            <option value="fisica" {% if celular.estado=="fisica" %}selected{% endif %}>Fisica</option>
+            <option value="asignada" {% if celular.estado=="asignada" %}selected{% endif %}>Asignada</option>
+            <option value="no devuelta" {% if celular.estado=="no devuelta" %}selected{% endif %}>No Devuelta</option>
+            <option value="rota" {% if celular.estado=="rota" %}selected{% endif %}>Rota</option>
+            <option value="robada" {% if celular.estado=="robada" %}selected{% endif %}>Robada</option>
+            <option value="perdida" {% if celular.estado=="perdida" %}selected{% endif %}>Perdida</option>
+        </select>
+        <label for="usuario">Usuario:</label>
+        <input type="text" name="usuario" value="{{ celular.usuario }}" placeholder="Usuario">
+        <label for="direccion">Direccion:</label>
+        <select name="direccion">
+            <option value="">Direccion</option>
+            <option value="intervencion" {% if celular.direccion=="intervencion" %}selected{% endif %}>Intervención</option>
+            <option value="sistemas" {% if celular.direccion=="sistemas" %}selected{% endif %}>Dirección General de Sistemas Informaticos</option>
+            <option value="fomento" {% if celular.direccion=="fomento" %}selected{% endif %}>Dirección Nacional de Fomento y Desarrollo</option>
+            <option value="administracion" {% if celular.direccion=="administracion" %}selected{% endif %}>Dirección General de Administración</option>
+            <option value="rrhh" {% if celular.direccion=="rrhh" %}selected{% endif %}>Dirección General de Recursos Humanos</option>
+            <option value="juridicos" {% if celular.direccion=="juridicos" %}selected{% endif %}>Dirección General de Asuntos Juridicos y Regulatorios</option>
+            <option value="planificacion" {% if celular.direccion=="planificacion" %}selected{% endif %}>Dirección Nacional de Planificación y Convergencia</option>
+            <option value="control" {% if celular.direccion=="control" %}selected{% endif %}>Dirección Nacional de Control y Fiscalizacion</option>
+            <option value="postales" {% if celular.direccion=="postales" %}selected{% endif %}>Dirección Nacional de Servicios Postales</option>
+            <option value="institucionales" {% if celular.direccion=="institucionales" %}selected{% endif %}>Dirección General de Asuntos Institucionales</option>
+            <option value="audiovisuales" {% if celular.direccion=="audiovisuales" %}selected{% endif %}>Dirección Nacional de Servicios Audiovisuales</option>
+            <option value="competencia" {% if celular.direccion=="competencia" %}selected{% endif %}>Dirección Nacional de Desarrollo de la Competencia en Redes</option>
+            <option value="autorizaciones" {% if celular.direccion=="autorizaciones" %}selected{% endif %}>Dirección Nacional de Autorizaciones y Registros TIC</option>
+            <option value="delegaciones" {% if celular.direccion=="delegaciones" %}selected{% endif %}>Dirección Nacional de Atencion de Usuarios</option>
+            <option value="auditoria" {% if celular.direccion=="auditoria" %}selected{% endif %}>Unidad de Auditoria Interna</option>
+            <option value="ccte" {% if celular.direccion=="ccte" %}selected{% endif %}>Centro De Comprobación Técnica De Emisiones</option>
+        </select>
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha" value="{{ celular.fecha.strftime('%Y-%m-%d') if celular.fecha else '' }}">
+        <label for="descripcion">Descripcion:</label>
+        <input type="text" name="descripcion" value="{{ celular.descripcion if celular.descripcion else ''}}" placeholder="Descripcion (opcional)">
+        <button type="submit">Actualizar Celular</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

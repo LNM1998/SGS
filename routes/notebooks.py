@@ -92,7 +92,7 @@ def agregar_notebook():
         try:
             form_data = {
                 'modelo' : request.form.get('modelo', '').strip(),
-                'inventario' : request.form.get('inventerio', '').strip(),
+                'inventario' : request.form.get('inventario', '').strip(),
                 'numero_serie' : request.form.get('numero_serie', '').strip(),
                 'estado' : request.form.get('estado', '').strip(),
                 'usuario' : request.form.get('usuario', '').strip(),
@@ -129,7 +129,6 @@ def agregar_notebook():
                 """
 
             nueva_notebook = Notebook(
-                tipo_remito='Entrega',
                 modelo=form_data['modelo'],
                 inventario=form_data['inventario'], 
                 numero_serie=form_data['numero_serie'], 
@@ -510,6 +509,18 @@ def llenar_plantilla_acta(notebook):
         modelo_formateado = "Exo Smart Pro Q6 i5"
     elif notebook.modelo == 'exo i7':
         modelo_formateado = "Exo Smart Pro Q6 i7"
+    elif notebook.modelo == 'bangho 1525':
+        modelo_formateado = "Bangho BES 1525"
+    elif notebook.modelo == 'bangho 1524':
+        modelo_formateado = "Bangho Max 1524"
+    elif notebook.modelo == 'bangho aero':
+        modelo_formateado = "Bangho Aero X2"
+    elif notebook.modelo == 'hp 4520':
+        modelo_formateado = "HP ProBook 4520"
+    elif notebook.modelo == 'hp 4530':
+        modelo_formateado = "HP ProBook 4530"
+    elif notebook.modelo == 'hp 6550':
+        modelo_formateado = "HP ProBook 6550"
     else:
         modelo_formateado = "Sin modelo"
 
@@ -604,6 +615,18 @@ def generar_acta_devolucion(notebook):
         modelo_formateado = "Exo Smart Pro Q6 i5"
     elif notebook.modelo == 'exo i7':
         modelo_formateado = "Exo Smart Pro Q6 i7"
+    elif notebook.modelo == 'bangho 1525':
+        modelo_formateado = "Bangho BES 1525"
+    elif notebook.modelo == 'bangho 1524':
+        modelo_formateado = "Bangho Max 1524"
+    elif notebook.modelo == 'bangho aero':
+        modelo_formateado = "Bangho Aero X2"
+    elif notebook.modelo == 'hp 4520':
+        modelo_formateado = "HP ProBook 4520"
+    elif notebook.modelo == 'hp 4530':
+        modelo_formateado = "HP ProBook 4530"
+    elif notebook.modelo == 'hp 6550':
+        modelo_formateado = "HP ProBook 6550"
     else:
         modelo_formateado = "Sin modelo"
 

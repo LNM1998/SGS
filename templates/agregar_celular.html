@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Agregar Celular</title>
+</head>
+
+<body>
+    <h1>Agregar Celular</h1>
+    <!-- Formulario para agregar un celular -->
+    <form class="form-alineado" action="/agregar_celular" method="post">
+        <div>
+            <label for="modelo">Modelo:</label>
+            <select name="modelo" required>
+                <option value="">Seleccione una opcion</option>
+                <option value="samsung style">Samsung Galaxy Style LTE 4G G3</option>
+                <option value="samsung a5">Samsung Galaxy A5</option>
+                <option value="samsung S9">Samsung S9</option>
+                <option value="moto g60s">Moto G60S</option>
+                <option value="samsung note 8">Samsung Note 8</option>
+                <option value="samsung a3">Samsung Galaxy A3</option>
+                <option value="samsung grand prime">Samsung Galaxy Grand Prime 4G</option>
+                <option value="samsung j2">Samsung Galaxy J2 Prime</option>
+                <option value="moto x">Moto X 2da Gen 4G LTE</option>
+                <option value="samsung a51">Samsung A51</option>
+                <option value="samsung j1">Samsung Galaxy J1 Ace</option>
+                <option value="samsung s7">Samsung Galaxy S7 Edge</option>
+                <option value="moto x play">Moto X Play</option>
+                <option value="samsung j5">Samsung J5 Prime</option>
+                <option value="solo linea">Solo Linea</option>
+            </select>
+            <label for="inventario">N° de Inventario:</label>
+            <input type="text" name="inventario" placeholder="N° Inventario" required>
+            <label for="imei">N° de Imei:</label>
+            <input type="text" name="imei" placeholder="N° de Imei" required>
+            <label for="estado">Estado:</label>
+            <select name="estado" required>
+                <option value="">Seleccione una opcion</option>
+                <option value="fisica">Fisica</option>
+                <option value="asignada">Asignada</option>
+                <option value="no devuelta">No Devuelta</option>
+                <option value="rota">Rota</option>
+                <option value="robada">Robada</option>
+                <option value="perdida">Perdida</option>
+            </select>
+            <label for="modelo">Usuario:</label>
+            <input type="text" name="usuario" placeholder="Usuario">
+            <label for="direccion">Direccion:</label>
+            <select name="direccion">
+                <option value="">Seleccione una opcion</option>
+                <option value="intervencion">Intervención</option>
+                <option value="sistemas">Dirección General de Sistemas Informaticos</option>
+                <option value="fomento">Dirección Nacional de Fomento y Desarrollo</option>
+                <option value="administracion">Dirección General de Administración</option>
+                <option value="rrhh">Dirección General de Recursos Humanos</option>
+                <option value="juridicos">Dirección General de Asuntos Juridicos y Regulatorios</option>
+                <option value="planificacion">Dirección Nacional de Planificación y Convergencia</option>
+                <option value="control">Dirección Nacional de Control y Fiscalizacion</option>
+                <option value="postales">Dirección Nacional de Servicios Postales</option>
+                <option value="institucionales">Dirección General de Asuntos Institucionales</option>
+                <option value="audiovisuales">Dirección Nacional de Servicios Audiovisuales</option>
+                <option value="competencia">Dirección Nacional de Desarrollo de la Competencia en Redes</option>
+                <option value="autorizaciones">Dirección Nacional de Autorizaciones y Registros TIC</option>
+                <option value="delegaciones">Dirección Nacional de Atencion de Usuarios</option>
+                <option value="auditoria">Unidad de Auditoria Interna</option>
+                <option value="ccte">Centro De Comprobación Técnica De Emisiones</option>
+            </select>
+            <label for="fecha">Fecha:</label>
+            <input type="date" name="fecha">
+            <label for="descripcion">Descripcion:</label>
+            <input type="text" name="descripcion" placeholder="Descripcion (opcional)">
+
+            <button type="submit">Agregar Celular</button>
+        </div>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
