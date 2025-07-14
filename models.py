@@ -156,7 +156,7 @@ class Proveedor(db.Model):
 
 class Celular(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    modelo = db.Column(db.Enum('samsung style', 'samsung a5', 'samsung S9', 'moto g60s', 'samsung note 8', 'samsung a3', 'samsung grand prime', 'samsung j2', 'moto x', 'samsung a51', 'samsung j1', 'samsung s7', 'moto x play', 'samsung j5'), nullable=False)
+    modelo = db.Column(db.Enum('samsung style', 'samsung a5', 'samsung S9', 'moto g60s', 'samsung note 8', 'samsung a3', 'samsung grand prime', 'samsung j2', 'moto x', 'samsung a51', 'samsung j1', 'samsung s7', 'moto x play', 'samsung j5', 'solo linea'), nullable=False)
     inventario = db.Column(db.String(20), nullable=False)
     imei = db.Column(db.String(20), nullable=False)
     estado = db.Column(db.Enum('fisica', 'asignada', 'no devuelta', 'rota', 'robada', 'perdida'), nullable=False)

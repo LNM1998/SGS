@@ -11,7 +11,7 @@
 </button>
 {% endif %}
 <!-- Formulario de búsqueda -->
-<form action="/notebooks" method="get">
+<form action="/celulares" method="get">
     <div class="filtros-container">
         <select id="filtro" name="filtro" onchange="cambiarFiltro()">
             <option value="">Filtro de Busqueda</option>
@@ -29,7 +29,7 @@
             style="display: none;">
 
         <!-- Lista desplegable para Versión de Windows (oculta por defecto) -->
-        <select id="filtro_estado_notebook" name="estado" style="display: none;">
+        <select id="filtro_estado_celular" name="estado" style="display: none;">
             <option value="">Todas</option>
             <option value="fisica" {% if valor=='fisica' %}selected{% endif %}>Fisica</option>
             <option value="asignada" {% if valor=='asignada' %}selected{% endif %}>Asignada</option>
@@ -81,7 +81,7 @@
         <button type="submit"><i class="fas fa-search"></i> Buscar</button>
         <button type="button" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i>  Limpiar Filtros</button>
         {% if current_user.role in ['basico', 'admin'] %}
-        <a href="{{ url_for('exportar_excel', tipo='celulares', celulares=celulares, filtro=filtro, valor=valor, estado=filtro_estado_celulares, modelo=filtro_modelo, direccion=filtro_direccion) }}"
+        <a href="{{ url_for('exportar_excel', tipo='celulares', celulares=celulares, filtro=filtro, valor=valor, estado=filtro_estado_celular, modelo=filtro_modelo, direccion=filtro_direccion) }}"
             class="exportar-btn">
             <i class="fas fa-file-excel"></i> Exportar Listado
         </a>
@@ -121,6 +121,7 @@
                 {% elif celular.modelo == 'samsung s7' %} Samsung Galaxy S7 Edge
                 {% elif celular.modelo == 'moto x play' %} Moto X Play
                 {% elif celular.modelo == 'samsung j5' %} Samsung J5 Prime
+                {% elif celular.modelo == 'solo linea' %} Solo Linea
                 {% endif %}
             </td>
             <td>{{ celular.inventario }}</td>

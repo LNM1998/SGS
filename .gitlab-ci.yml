@@ -1,0 +1,16 @@
+variables:
+  DOCKER_HOST: unix:///var/run/docker.sock
+  DOCKER_TLS_CERTDIR: ""
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: docker:latest
+  script:
+    - docker info
+    - echo "$CI_JOB_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin registry-gitlab-desa.enacom.gob.ar
+    - docker build -t registry-gitlab-desa.enacom.gob.ar/$CI_PROJECT_PATH:$CI_COMMIT_SHA -t registry-gitlab-desa.enacom.gob.ar/$CI_PROJECT_PATH:latest .
+    - docker push registry-gitlab-desa.enacom.gob.ar/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+    - docker push registry-gitlab-desa.enacom.gob.ar/$CI_PROJECT_PATH:latest
