@@ -41,10 +41,12 @@
             <option value="Deposito Saldias" {% if reclamoe.edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
         </select>
         <label for="piso">Piso:</label>
-        <select id="filtro_piso" name="piso" required onchange="actualizarPisosFiltro()">
+        <select id="filtro_piso" name="piso" required onfocus="actualizarPisosFiltro()">
             <option value="">Seleccione un piso</option>
             {% if reclamoe.piso %}
-            <option value="{{ reclamoe.piso }}" selected>{{ reclamoe.piso }}</option>
+                <option value="{{ reclamoe.piso }}" selected>{{ reclamoe.piso }}</option>
+            {% else %}
+                <option value="{{ reclamoe.piso }}" {% if reclamoe.edificio == filtro_edificio %}selected{% endif %}>{{ reclamoe.piso }}</option>
             {% endif %}
         </select>
         <label for="descripcion">Descripcion:</label>

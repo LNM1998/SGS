@@ -32,10 +32,12 @@
             <option value="Deposito Saldias" {% if impresora.edificio=='Deposito Saldias' %}selected{% endif %}>Deposito Saldias</option>
         </select>
         <label for="piso">Piso:</label>
-        <select id="filtro_piso" name="piso" required onclick="actualizarPisosFiltro()">
+        <select id="filtro_piso" name="piso" required onfocus="actualizarPisosFiltro()">
             <option value="">Seleccione un piso</option>
             {% if impresora.piso %}
-            <option value="{{ impresora.piso }}" selected>{{ impresora.piso }}</option>
+                <option value="{{ impresora.piso }}" selected>{{ impresora.piso }}</option>
+            {% else %}
+                <option value="{{ impresora.piso }}" {% if impresora.edificio == filtro_edificio %}selected{% endif %}>{{ impresora.piso }}</option>
             {% endif %}
         </select>
         <label for="servidor">Servidor:</label>
